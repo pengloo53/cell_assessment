@@ -1,0 +1,9 @@
+{
+  "department" : "Cell",
+  "mysql" : {
+    "host": "localhost",
+    "user": "lupeng",
+    "password": "080910",
+    "database": "cell_staff_assessment"
+  }
+}
