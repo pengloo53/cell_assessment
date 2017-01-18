@@ -1,5 +1,4 @@
 {
-  "department" : "Cell",
   "mysql" : {
     "host": "localhost",
     "user": "lupeng",

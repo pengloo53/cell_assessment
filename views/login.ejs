@@ -1,0 +1,54 @@
+<% include layout/common-head.ejs %>
+<body>
+<!--<div class="jumbotron">-->
+<div id="home-bak"></div>
+<div id="home-overlay"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <div class="form-container">
+                <div class="form-title">
+                    <h2 class="text-center"><%= title %></h2>
+                    <p class="lead"></p>
+                </div>
+                <div class="form-content">
+                    <form action="/login" method="POST">
+                        <div class="form-group">
+                            <!--<label for="username">用户名</label>-->
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input type="text" name="username" class="form-control" id="usernmae" placeholder="员工号">
+                                <!--                        <span class="input-group-addon" data-content="员工号">
+                                                            <i class="glyphicon glyphicon-question-sign"></i>
+                                                        </span>-->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <!--<label for="password">密码</label>-->
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-edit"></i></span>
+                                <input type="password" class='form-control' name="passwd" id="passwd" placeholder="密码">
+                                <span id="forget" class="input-group-addon" data-toggle="tooltip" title="忘记密码">
+                            <i class="glyphicon glyphicon-question-sign"></i>
+                        </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="reset" id="reset" value="重置" class="btn btn-warning col-lg-4 col-lg-offset-1">
+                            <input type="submit" id="submit" class="btn btn-primary col-lg-4 col-lg-offset-2" value="登录">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+      $('#forget').click(function(){
+        alert('请联系系统管理员');
+      });
+    });
+</script>
+<!--</div>-->
+<% include layout/common-foot.ejs %>

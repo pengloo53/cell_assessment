@@ -44,7 +44,7 @@ pool.on('enqueue', function () {
   console.log('Waiting for available connection slot');
 });
 
-for (var i = 0; i < 6; i++) {
+for (var i = 0; i < 40; i++) {
   excuteSQL1();
 }
 

@@ -1,0 +1,44 @@
+<% include layout/common-head.ejs %>
+<body>
+<% include layout/common-header.ejs %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3 col-md-3">
+            <% include layout/common-nav.ejs %>
+            <div class="tools">
+                <button class="btn btn-danger btn-sm">批量上传工具</button>
+            </div>
+        </div>
+
+        <!--<div class="col-lg-1"></div>-->
+        <div class="col-lg-8 col-md-8">
+            <div class="content">
+                <h1>hello,world</h1>
+                <p>Mutley, you snickering, floppy eared hound. When courage is needed, you're never around. Those medals you
+                    wear on your moth-eaten chest should be there for bungling at which you are best. So, stop that pigeon,
+                    stop that pigeon, stop that pigeon, stop that pigeon, stop that pigeon, stop that pigeon, stop that
+                    pigeon. Howwww! Nab him, jab him, tab him, grab him, stop that pigeon now.
+                </p><p>
+                    Ulysses, Ulysses - Soaring through all the galaxies. In search of Earth, flying in to the night.
+                    Ulysses, Ulysses - Fighting evil and tyranny, with all his power, and with all of his might. Ulysses -
+                    no-one else can do the things you do. Ulysses - like a bolt of thunder from the blue. Ulysses - always
+                    fighting all the evil forces bringing peace and justice to all.
+                </p><p>
+                    There's a voice that keeps on calling me. Down the road, that's where I'll always be. Every stop I make,
+                    I make a new friend. Can't stay for long, just turn around and I'm gone again. Maybe tomorrow, I'll want
+                    to settle down, Until tomorrow, I'll just keep moving on.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+      $('.tools button').click(function(){
+        $('div.content').html('');
+      });
+    });
+</script>
+</body>
+<% include layout/common-footer.ejs %>
+<% include layout/common-foot.ejs %>

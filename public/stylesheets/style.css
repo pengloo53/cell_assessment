@@ -1,8 +1,67 @@
 body {
-  padding: 50px;
+  margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
-
-a {
-  color: #00B7FF;
+li ul{
+  margin-left: 3em;
 }
+
+.breadcrumb{
+  margin:0;
+}
+
+.top{
+  background-color: #f5f5f5;
+}
+
+nav{
+  margin-top: 3em;
+}
+
+.tools{
+  margin-top: 2em;
+}
+/* ************************** login page **********************/
+#home-bak {
+  background: url(http://10.20.1.100/index/cover.jpg);
+  background-color: #222;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  padding: 0;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+#home-overlay {
+  background-color: rgba(44, 62, 80, 0.3);
+  background-image: url("http://10.20.1.100/index/pattern.png");
+  background-repeat: repeat;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+#forget{
+  cursor: pointer;
+}
+
+.form-container{
+  background-color: #fefefe;
+  margin-top: 15%;
+  padding: 3% 20% 15% 20%;
+  box-shadow: 10px 10px 5px #555555;
+  border-radius: 1%;
+}
+
+/* ************************** login page **********************/
+
