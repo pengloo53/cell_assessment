@@ -21,6 +21,10 @@ nav{
 .tools{
   margin-top: 2em;
 }
+
+.content{
+  margin: 3em 1em;
+}
 /* ************************** login page **********************/
 #home-bak {
   background: url(http://10.20.1.100/index/cover.jpg);

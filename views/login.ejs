@@ -1,6 +1,5 @@
 <% include layout/common-head.ejs %>
 <body>
-<!--<div class="jumbotron">-->
 <div id="home-bak"></div>
 <div id="home-overlay"></div>
 <div class="container">
@@ -17,7 +16,7 @@
                             <!--<label for="username">用户名</label>-->
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input type="text" name="username" class="form-control" id="usernmae" placeholder="员工号">
+                                <input type="text" name="adminid" class="form-control" id="username" placeholder="员工号">
                                 <!--                        <span class="input-group-addon" data-content="员工号">
                                                             <i class="glyphicon glyphicon-question-sign"></i>
                                                         </span>-->
@@ -43,6 +42,7 @@
         </div>
     </div>
 </div>
+<% include layout/common-footer.ejs %>
 <script>
     $(function(){
       $('#forget').click(function(){
@@ -50,5 +50,4 @@
       });
     });
 </script>
-<!--</div>-->
 <% include layout/common-foot.ejs %>

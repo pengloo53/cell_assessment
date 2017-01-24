@@ -10,23 +10,27 @@ var dbInsert = require('../db/dbInsert.js');
 var dbDelete = require('../db/dbDelete.js');
 var dbUpdate = require('../db/dbUpdate.js');
 
-var adminType; //管理员类型
-
 // 权限过滤：需要登陆账号，密码才能进入后台管理页面
-/*router.use(function (req, res, next) {
-  if (req.session && req.session.username) {
+router.use(function (req, res, next) {
+  if (req.session && req.session.adminInfo) {
     next();
   } else {
     res.redirect('/login');
   }
-});*/
+});
 
-// Get全局，判断用户属于普通考核员还是系统管理员
+// 属于系统管理员的操作权限控制
+router.use('/sys', function(req,res,next){
+  var adminid = req.session.adminInfo.adminid;
+  var adminType = req.session.adminInfo.type;
+  if(adminType != 'sys'){
+    res.send('您没有权限操作');
+  }
+});
 
-
-/* GET users listing. */
+// 管理员首页-员工考核页面
 router.get('/', function (req, res, next) {
-  var adminid = '118663';
+  var adminid = req.session.adminInfo.adminid;
   dbSelect.getAdminInfo(adminid, function (err, rows, fields) {
     if (err) {
       throw err;
@@ -38,6 +42,31 @@ router.get('/', function (req, res, next) {
       });
     }
   });
+});
+
+// 人员管理
+router.get('/staff',function(req,res,next){
+
+});
+
+// 统计页面-初始
+/*router.get('/sta',function(req,res,next){
+
+});*/
+
+// 统计页面-个人LOG
+router.get('/sta/person',function(req,res,next){
+
+});
+
+// 统计页面-个人统计
+router.get('/sta/all',function(req,res,next){
+
+});
+
+// 统计页面-类型统计
+router.get('/sta/type',function(req,res,next){
+
 });
 
 // 测试方法
