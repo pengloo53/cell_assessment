@@ -1,7 +1,12 @@
 body {
   margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  /*background-color: #eeeeee;*/
 }
+header{
+  /*border-bottom: 3px solid #eee;*/
+}
+
 li ul{
   margin-left: 3em;
 }
@@ -15,7 +20,8 @@ li ul{
 }
 
 nav{
-  margin-top: 3em;
+  padding: 3em;
+  background-color: #eee;
 }
 
 .tools{
@@ -23,8 +29,14 @@ nav{
 }
 
 .content{
-  margin: 3em 1em;
+  padding: 2em 25em 2em 4em;
+  background-color: #eee;
 }
+
+/* admin.ejs */
+/*.ass{
+  padding: 2em;
+}*/
 /* ************************** login page **********************/
 #home-bak {
   background: url(http://10.20.1.100/index/cover.jpg);

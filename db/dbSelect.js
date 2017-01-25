@@ -96,4 +96,18 @@ exports.getTypeById = function(id,callback){
   })
 };
 
+// 根据类别获取有哪些类型
+exports.getType2ByType1 = function(type1,callback){
+  var sql = 'select distinct type2 from type where type1 = "' + type1 + '"';
+  connect.querySQL(sql,function(err,rows,fields){
+    callback(err,rows,fields);
+  });
+};
+// 根据类别类型获取有哪些原因
+exports.getType3ByType12 = function(type1,type2,callback){
+  var sql = 'select distinct type3 from type where type1 = "' + type1 + '" and type2="' + type2 + '"';
+  connect.querySQL(sql,function(err,rows,fields){
+    callback(err,rows,fields);
+  });
+};
 /***********************************************************/

@@ -6,41 +6,134 @@
     <div class="row">
         <div class="col-lg-3 col-md-3">
             <% include layout/common-nav.ejs %>
-            <div class="tools">
-                <button class="btn btn-danger btn-sm">批量上传工具</button>
-            </div>
         </div>
-
         <!--<div class="col-lg-1"></div>-->
         <div class="col-lg-8 col-md-8">
             <div class="content">
-                <h3>员工考核</h3>
-                <div class="search col-lg-4 col-md-4">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="员工号">
-                        <span class="input-group-addon">搜索</span>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <label for="username">姓名</label>
-                    <input type="text" class="" disabled placeholder="姓名">
-                </div>
+                <!--<div class="panel-heading">-->
+                <h3>员工考核 -
+                    <small id="userInfo" class="text-primary"></small>
+                </h3>
+                <!--</div>-->
+                <p class="lead"></p>
                 <div class="ass">
-                    <form action="/" method="POST">
-
+                    <form action="/admin/ass" method="POST" role="form" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="userid" class="control-label col-lg-3">员工号</label>
+                            <div class="col-lg-9">
+                                <input type="text" name="userid" id="userid" class="form-control" placeholder="请输入员工号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="type1" class="control-label col-lg-3">类别</label>
+                            <div class="col-lg-9">
+                                <label class="checkbox-inline">
+                                    <input type="radio" name="type1" value="a" checked>
+                                    <span class="label label-primary text-center">+ 加分</span>
+                                    <input type="radio" name="type1" value="b">
+                                    <span class="label label-primary text-center">- 减分</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="score" class='control-label col-lg-3'>分数</label>
+                            <div class="col-lg-9">
+                                <input type="text" name="score" class="form-control" placeholder="考核分数">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="type2" class="control-label col-lg-3">加/减类型</label>
+                            <div class="col-lg-9">
+                                <select name="type2" id="type2" class="form-control">
+                                    <option value="">请选择类型</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="type3" class="control-label col-lg-3">加/减原因</label>
+                            <div class="col-lg-9">
+                                <select name="type3" id="type3" class="form-control">
+                                    <option value="">请选择原因</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="scoredate" class="control-label col-lg-3">日期</label>
+                            <div class="col-lg-9">
+                                <input type="text" name="scoredate" placeholder="评分日期" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-offset-3 col-lg-9">
+                                <input type="submit" id="submit" class="btn btn-primary" value="提交">
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<% include layout/common-footer.ejs %>
 <script>
-    $(function(){
-      $('.tools button').click(function(){
-        $('div.content').html('');
+  $(function () {
+    // 输入员工号，显示姓名
+    $('#userid').blur(function () {
+      var userid = $(this).val().trim();
+      $.ajax({
+        url: '/admin/ass/ajax/user?userid=' + userid,
+        global: false,
+        success: function (result) {
+          $('#userInfo').html('<strong>' + result.username + '</strong>');
+        },
+        error: function () {
+          $('#userInfo').html('不存在该用户');
+        }
       });
     });
+    // 默认显示 + 分
+    $.ajax({
+      url: '/admin/ass/ajax/type2?type1=a',
+      global: false,
+      success: function(result){
+        for(var i =0 ; i < result.length; i++){
+          var $option = $('<option>' + result[i].type2 + '</option>');
+          $('select[name=type2]').append($option);
+        }
+      }
+    });
+    // 点击类别，显示类型
+    $('input:radio[name=type1]').change(function(){
+      var type1Val = $(this).val();
+      $.ajax({
+        url: '/admin/ass/ajax/type2?type1=' + type1Val,
+        global: false,
+        success: function(result){
+          $('select[name=type2] option:gt(0)').remove();
+          for(var i =0 ; i < result.length; i++){
+            var $option = $('<option>' + result[i].type2 + '</option>');
+            $('select[name=type2]').append($option);
+          }
+        }
+      });
+    });
+    // 点击类型，显示原因
+    $('select[name=type2]').change(function(){
+      var type1Val = $('input:radio[name=type1]').val();
+      var type2Val = $(this).val();
+      $.ajax({
+        url: '/admin/ass/ajax/type3?type1=' + type1Val + '&type2=' + type2Val,
+        global: false,
+        success: function(result){
+          $('select[name=type3] option:gt(0)').remove();
+          for(var i =0 ; i < result.length; i++){
+            var $option = $('<option>' + result[i].type3 + '</option>');
+            $('select[name=type3]').append($option);
+          }
+        }
+      });
+    });
+  });
 </script>
 </body>
-<% include layout/common-footer.ejs %>
 <% include layout/common-foot.ejs %>

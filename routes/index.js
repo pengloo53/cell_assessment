@@ -4,6 +4,8 @@ var dbSelect = require('../db/dbSelect.js');
 var dbInsert = require('../db/dbInsert.js');
 var dbDelete = require('../db/dbDelete.js');
 var dbUpdate = require('../db/dbUpdate.js');
+// errHandle
+var errHandle = require('../lib/errHandle.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -32,7 +34,7 @@ router.post('/login',function(req,res,next){
           res.send('密码错误');
         }
       }else{
-        throw err;
+        errHandle(res,'数据库返回错误',err);
       }
     });
   }
