@@ -1,0 +1,22 @@
+<% include layout/common-head.ejs %>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6" id="datepicker">
+            <input type="text" class="form-control">
+        </div>
+    </div>
+</div>
+<% include layout/common-footer.ejs %>
+<script>
+  $('#datepicker input').datepicker({
+    format: "yyyymmdd",
+    weekStart: 7,
+    todayBtn: "linked",
+    language: "zh-CN",
+    autoclose: true,
+    todayHighlight: true
+  });
+</script>
+<% include layout/common-foot.ejs %>
