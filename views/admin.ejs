@@ -4,17 +4,19 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-lg-3 col-md-3">
+        <div class="col-lg-3 col-md-3 hidden-sm hidden-xs">
             <% include layout/common-nav.ejs %>
         </div>
         <!--<div class="col-lg-1"></div>-->
-        <div class="col-lg-8 col-md-8">
+        <div class="col-lg-9 col-md-9">
             <div class="content">
                 <!--<div class="panel-heading">-->
+                <span class="hidden" id="page">员工考核</span>
+                <div id="successField"></div>
                 <h3>员工考核 -
-                    <small id="userInfo" class="text-primary"></small>
+                    <small id="userInfo" class="text-danger"></small>
                 </h3>
-                <!--<div class="alert alert-danger">请填写完整</div>-->
+                <!--<div id="errField"></div>-->
                 <!--</div>-->
                 <p class="lead"></p>
                 <div class="ass">
@@ -29,11 +31,11 @@
                             <label for="type1" class="control-label col-lg-2">类别</label>
                             <div class="col-lg-6">
                                 <label class="radio-inline">
-                                    <input type="radio" name="type1" value="a" checked>
+                                    <input type="radio" name="type1" value="加分" checked>
                                     <span class="badge">+ 加分</span>
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="type1" value="b">
+                                    <input type="radio" name="type1" value="减分">
                                     <span class="badge">- 减分</span>
                                 </label>
                             </div>
@@ -80,7 +82,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-lg-offset-2 col-lg-6">
-                                <input type="submit" id="submit" class="btn btn-primary" value="提交">
+                                <button id="submit" class="btn btn-primary">提交</button>
                             </div>
                         </div>
                     </form>
@@ -93,44 +95,46 @@
 <script>
   $(function () {
     // 输入员工号，显示姓名
+    var $userInfo = $('#userInfo');
     $('#userid').blur(function () {
       var userid = $(this).val().trim();
       $.ajax({
         url: '/admin/ass/ajax/user?userid=' + userid,
         global: false,
         success: function (result) {
-          $('#userInfo').html('<strong>' + result.username + '</strong>');
+          $userInfo.html('<strong>' + result.username + '</strong>');
         },
         error: function () {
-          $('#userInfo').html('不存在该用户');
+          $userInfo.html('不存在该用户');
         }
       });
     });
     // 默认显示 + 分
-    var $type2Select = $('select[name=type2]');
-    var $type3Select = $('select[name=type3]');
-    var type1Val = 'a';
+    var $type1Field = $('input:radio[name=type1]');
+    var $type2Select = $('#type2');
+    var $type3Select = $('#type3');
+    var type1Val = $type1Field.val();
     var type2Val = '';
     $.ajax({
-      url: '/admin/ass/ajax/type2?type1=a',
+      url: '/admin/ass/ajax/type2?type1=' + type1Val,
       global: false,
-      success: function(result){
-        for(var i =0 ; i < result.length; i++){
+      success: function (result) {
+        for (var i = 0; i < result.length; i++) {
           var $option = $('<option>' + result[i].type2 + '</option>');
           $type2Select.append($option);
         }
       }
     });
     // 点击类别，显示类型
-    $('input:radio[name=type1]').change(function(){
+    $type1Field.change(function () {
       type1Val = $(this).val();
       $.ajax({
         url: '/admin/ass/ajax/type2?type1=' + type1Val,
         global: false,
-        success: function(result){
+        success: function (result) {
           $('select[name=type2] option:gt(0)').remove();
           $('select[name=type3] option:gt(0)').remove();
-          for(var i =0 ; i < result.length; i++){
+          for (var i = 0; i < result.length; i++) {
             var $option = $('<option>' + result[i].type2 + '</option>');
             $type2Select.append($option);
           }
@@ -138,14 +142,14 @@
       });
     });
     // 点击类型，显示原因
-    $('select[name=type2]').change(function(){
+    $type2Select.change(function () {
       type2Val = $(this).val();
       $.ajax({
         url: '/admin/ass/ajax/type3?type1=' + type1Val + '&type2=' + type2Val,
         global: false,
-        success: function(result){
+        success: function (result) {
           $('select[name=type3] option:gt(0)').remove();
-          for(var i =0 ; i < result.length; i++){
+          for (var i = 0; i < result.length; i++) {
             var $option = $('<option>' + result[i].type3 + '</option>');
             $type3Select.append($option);
           }
@@ -163,26 +167,42 @@
       todayHighlight: true
     });
     // 提交表单
-    $('form').submit(function(){
+    $('#submit').click(function () {
+//      $successField.html('');
+      $('form').submit(function(){
+        return false;
+      });
+      $('#userid').blur();
       var userid = $('input[name=userid]').val();
-      var score = $('select[name=score] option:selected').val();
+      var scoreNum = $('select[name=score] option:selected').val();
+      // 减分保存负数
+      var score = (type1Val == "加分")?scoreNum:0-scoreNum;
       var type3Val = $('select[name=type3] option:selected').val();
       var scoredate = $('input[name=scoredate]').val();
-      var errField = $('#userInfo').text();
-      if(userid && score && type1Val && type2Val && type3Val && scoredate){
-        if(errField != '不存在该用户'){
+      if (userid && score && type1Val && type2Val && type3Val && scoredate) {
+        if($userInfo.text() != '不存在该用户'){
           $.ajax({
             url: '/admin/ass/',
             method: 'post',
             global: false,
-            success: function(result){
-
+            data:{
+              userid: userid,
+              score: score,
+              type1: type1Val,
+              type2: type2Val,
+              type3: type3Val,
+              scoredate: scoredate
+            },
+            success: function (result) {
+              var $message = $('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times\;</a>' + result + '</div>');
+              $message.prependTo('.content').fadeOut(2000,function(){
+                $message.remove();
+              });
             }
           });
         }
-      }else{
-        alert('请填写完整');
-        return false;
+      } else {
+        alert("请填写完整");
       }
     });
   });

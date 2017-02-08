@@ -5,7 +5,7 @@
                 <ul class="breadcrumb text-right">
                     <%= info.adminname %>，欢迎登陆，
                     <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> 登出</a></li>
-                    <!--<li><a href="/add"><span class="glyphicon glyphicon-plus"></span> 添加需求</a></li>-->
+                    <li><a href="javascript:void(0)" id="setting"><span class="glyphicon glyphicon-cog"></span> 设置</a></li>
                 </ul>
             </div>
         </div>
@@ -13,9 +13,13 @@
     <div class="container">
         <div class="row">
             <h4><a href="/admin"><img src="/images/logo.png" alt="员工考核系统"></a>
-                <small><%= info.department %> - <%= info.office %> - <%= info.produce %> - <%= info.team %></small>
+                <small>
+                    <%= info.department %>
+                    <%= info.office ? ' - ' + info.office : '' %>
+                    <%= info.produce ? ' - ' + info.produce : '' %>
+                    <%= info.team ? ' - ' + info.team : '' %>
+                </small>
             </h4>
-            <!--<p class="lead"></p>-->
         </div>
     </div>
 </header>

@@ -49,11 +49,4 @@ router.get('/logout', function (req, res, next) {
   res.redirect('/login');
 });
 
-/* test page */
-router.get('/test', function(req,res,next){
-  res.render('test',{
-    title: 'test page'
-  });
-});
-
 module.exports = router;

@@ -11,6 +11,7 @@ var handleDisconnect = require('./db/handleDisconnect.js');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var admins = require('./routes/admins');
+var systems = require('./routes/systems');
 
 var app = express();
 
@@ -41,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/user', users);
 app.use('/admin', admins);
+app.use('/sys', systems);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

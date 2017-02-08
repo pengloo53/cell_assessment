@@ -1,0 +1,247 @@
+<% include layout/common-head.ejs %>
+<body>
+<% include layout/common-header.ejs %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 hidden-sm hidden-xs">
+            <% include layout/common-nav.ejs %>
+        </div>
+        <div class="col-lg-9 col-md-9">
+            <div class="content">
+                <span class="hidden" id="page">人员管理</span>
+                <h3>人员管理</h3>
+                <div class="staff">
+                    <div id="toolbar">
+                        <button id="add" class="btn btn-warning">
+                            <i class="glyphicon glyphicon-plus"></i> 添加
+                        </button>
+                    </div>
+                    <table id="table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 模态框（Modal） -->
+<!--<div class="modal fade" id="eidtModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myReplyModalLabel">更改员工</h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="editConfirm">提交回复</button>
+            </div>
+        </div>&lt;!&ndash; modal-content &ndash;&gt;
+    </div>
+</div>-->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myAddModalLabel">添加员工
+                    <small>班组：
+                        <%= info.department %>
+                        <%= info.office ? ' - ' + info.office : '' %>
+                        <%= info.produce ? ' - ' + info.produce : '' %>
+                        <%= info.team ? ' - ' + info.team : '' %>
+                    </small>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="userid" class="control-label col-lg-2">员工号</label>
+                        <div class="col-lg-9">
+                            <input type="text" name="userid" id="userid" class="form-control" placeholder="请填写员工号">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="username" class="control-label col-lg-2">姓名</label>
+                        <div class="col-lg-9">
+                            <input type="text" name="username" id="username" class="form-control" placeholder="请填写姓名">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="addConfirm">添加</button>
+            </div>
+        </div><!-- modal-content -->
+    </div>
+</div>
+<% include layout/common-modal.ejs %>
+<!-- modal -->
+<% include layout/common-footer.ejs %>
+<!-- bootstrap table -->
+<script src="/bootstrap-table/dist/bootstrap-table.js"></script>
+<script src="/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
+<script src="/bootstrap-table/dist/extensions/export/bootstrap-table-export.js"></script>
+<script src="/bootstrap-table/lib/tableExport.js"></script>
+<script>
+  function operateFormatter(value, row, index) {
+    return [
+      '<a class="op" href="javascript:void(0)" title="修改">',
+      '<i class="glyphicon glyphicon-pencil text-primary"></i></a>  ',
+      '<a class="op" href="javascript:void(0)" title="删除">',
+      '<i class="glyphicon glyphicon-trash text-danger"></i></a>'
+    ].join('');
+  }
+  var $table = $('#table');
+  var clickId = ''; // 最后点击的id
+  /*  $('#editConfirm').click(function () {
+   if (clickId != '') {
+   $.ajax({
+   url: "/admin/staff/ajax/editStaff",
+   method: 'POST',
+   data: {
+   id: clickId,
+   reContent: $('textarea[name=reContent]').val(),
+   status: $('select option:selected').val()
+   },
+   success: function (result) {
+   $('#replyModal').modal('hide');
+   $table.bootstrapTable('refresh');
+   }
+   });
+   }
+   });*/
+
+  $('#delConfirm').click(function () {
+    if (clickId != '') {
+      $.ajax({
+        url: '/admin/staff/ajax/delStaff',
+        method: 'POST',
+        data: {
+          id: clickId
+        },
+        success: function (result) {
+          $('#delModal').modal('hide');
+//          ajaxReturnMessageForGlobal = result;
+          alert(result);
+          $table.bootstrapTable('remove', {
+            field: 'uid',
+            values: [clickId]
+          });
+        }
+      });
+    }
+  });
+  window.operateEvents = {
+    'click [title=修改]': function (e, value, row, index) {
+      // alert('You click edit action, row: ' + JSON.stringify(row));
+      // confirm('确认编辑吗？');
+      alert('编辑功能暂不开放');
+    },
+    'click [title=删除]': function (e, value, row, index) {
+      $('#delModal').modal('show');
+      clickId = row.uid;
+    }
+  };
+  $(function () {
+    $('#table').bootstrapTable({
+      url: '/admin/staff/ajax/table',
+      height: 550,
+      toolbar: '#toolbar',
+      search: true,
+      showRefresh: true,
+      showColumns: true,
+      showExport: true,
+      ajaxOptions: {global: false},
+      showPaginationSwitch: true,
+      pagination: true,
+      sidePagination: 'client',
+      pageNumber: 1,
+      pageSize: 10,
+      pageList: '[10, 20, 50, ALL]',
+      responseHandler: function (res) {
+        return res;
+      },
+      sortOrder: 'desc',
+      sortName: 'uid',
+      columns: [{
+        field: 'uid',
+        title: 'uid',
+        visible: false
+      }, {
+        field: 'userid',
+        title: '员工号'
+      }, {
+        field: 'username',
+        title: '姓名'
+      }, {
+        field: 'department',
+        title: '部门'
+      }, {
+        field: 'office',
+        title: '科室'
+      }, {
+        field: 'produce',
+        title: '工序'
+      }, {
+        field: 'team',
+        title: '班组'
+      }, {
+        field: 'operate',
+        title: '操作',
+        align: 'center',
+        valign: 'middle',
+        events: operateEvents,
+        formatter: operateFormatter
+      }]
+    });
+      /* toolbar - add user */
+    $('#add').click(function () {
+      $('#addModal').modal('show');
+    });
+    var $useridField = $('#userid');
+    var $usernameField = $('#username');
+    $('#addConfirm').click(function () {
+      var userid = $useridField.val().trim();
+      var username = $usernameField.val().trim();
+      if (userid && username) {
+        if (userid.length <= 10 && username.length <= 10) {
+          $.ajax({
+            url: '/admin/staff/ajax/addStaff',
+            method: 'POST',
+            data: {
+              userid: userid,
+              username: username
+            },
+            success: function (result) {
+              $('#addModal').modal('hide');
+//        ajaxReturnMessageForGlobal = result;
+              alert(result);
+              $table.bootstrapTable('refresh');
+            }
+          });
+        } else {
+          alert('输入超过长度，请重新输入');
+          $useridField.val('');
+          $usernameField.val('');
+          $useridField[0].focus();
+        }
+      } else {
+        alert('请填写完整');
+      }
+    });
+      /* ajaxSuccess 全局事件 */
+      /*    $(document).ajaxSuccess(function (evt, request, settings) {
+       var $message = $('<div class="btn btn-danger btn-xs">' + ajaxReturnMessageForGlobal + '</div>');
+       $message.appendTo('#toolbar').fadeOut(5000, function () {
+       $(this).remove();
+       });
+       });*/
+  });
+
+</script>
+</body>
+<% include layout/common-foot.ejs %>
