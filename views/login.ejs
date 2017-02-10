@@ -8,7 +8,7 @@
             <div class="form-container">
                 <div class="form-title">
                     <h2 class="text-center"><%= title %></h2>
-                    <p class="lead"></p>
+                    <p class="text-center"><span class="label label-danger"><%= message %></span></p>
                 </div>
                 <div class="form-content">
                     <form action="/login" method="POST">
@@ -36,6 +36,7 @@
                             <input type="reset" id="reset" value="重置" class="btn btn-warning col-lg-4 col-lg-offset-1">
                             <input type="submit" id="submit" class="btn btn-primary col-lg-4 col-lg-offset-2" value="登录">
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -47,6 +48,14 @@
     $(function(){
       $('#forget').click(function(){
         alert('请联系系统管理员进行重置');
+      });
+      $('form').submit(function(){
+        var username = $('#username').val().trim();
+        var password = $('#passwd').val();
+        if(!username || !password){
+          alert('不允许为空');
+          return false;
+        }
       });
     });
 </script>

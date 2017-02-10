@@ -11,7 +11,7 @@
             <div class="content">
                 <span class="hidden" id="page"><%= title %></span>
                 <h3><%= title %></h3>
-                <div class="admins">
+                <div class="staff">
                     <div id="toolbar">
                         <button id="add" class="btn btn-warning">
                             <i class="glyphicon glyphicon-plus"></i> 添加
@@ -46,41 +46,48 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myAddModalLabel">添加考核员
-                    <small>部门：<%= info.department %></small>
+                <h4 class="modal-title" id="myAddModalLabel">添加班组
+                    <small>部门：
+                        <%= info.department %>
+                    </small>
                 </h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal">
                     <input type="hidden" name="department" id="department" value="<%= info.department %>">
                     <div class="form-group">
-                        <label for="userid" class="control-label col-lg-2">员工号</label>
-                        <div class="col-lg-9">
-                            <input type="text" name="adminid" id="adminid" class="form-control" placeholder="请填写考核员工号">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="username" class="control-label col-lg-2">姓名</label>
-                        <div class="col-lg-9">
-                            <input type="text" name="adminname" id="adminname" class="form-control"
-                                   placeholder="请填写考核员姓名">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="control-label col-lg-2 hidden-md hidden-sm">组织</label>
-                        <div class="col-lg-3 col-md-4 col-sm-4">
-                            <select name="office" id="office" class="form-control">
+                        <label for="office" class="control-label col-lg-2 hidden-md hidden-sm">科室</label>
+                        <div class="col-lg-8 col-md-8 col-sm-8">
+                            <input class="form-control" name="office" type="text" placeholder="新增科室">
+                            <select name="office" class="form-control">
                                 <option value="">请选择科室</option>
                             </select>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-4">
-                            <select name="produce" id="produce" class="form-control">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <a href="javascript:void(0)" class="addNew newOffice">新增</a>
+                            <a href="javascript:void(0)" class="cancelNew cancelOffice">取消</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="produce" class="control-label col-lg-2 hidden-md hidden-sm">工序</label>
+                        <div class="col-lg-8 col-md-8 col-sm-8">
+                            <input class="form-control" name="produce" type="text" placeholder="新增工序">
+                            <select name="produce" class="form-control">
                                 <option value="">请选择工序</option>
                             </select>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-4">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <a href="javascript:void(0)" class="addNew newProduce">新增</a>
+                            <a href="javascript:void(0)" class="cancelNew cancelProduce">取消</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="team" class="control-label col-lg-2">班组</label>
+                        <div class="col-lg-3">
                             <select name="team" id="team" class="form-control">
-                                <option value="">请选择班组</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
                             </select>
                         </div>
                     </div>
@@ -88,30 +95,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" id="addConfirm">提交</button>
+                <button type="button" class="btn btn-primary" id="addConfirm">添加</button>
             </div>
         </div><!-- modal-content -->
-    </div>
-</div>
-<div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myRemoveModalLabel">确认是否重置密码？</h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-danger" id="resetConfirm">确认重置</button>
-            </div>
-        </div>
     </div>
 </div>
 <% include component/modal-modPassword.ejs %>
 <% include component/modal-delConfirm.ejs %>
 <!-- modal -->
-
 <% include layout/common-footer.ejs %>
 <!-- bootstrap table -->
 <script src="/bootstrap-table/dist/bootstrap-table.js"></script>
@@ -125,14 +116,11 @@
       '<a class="op" href="javascript:void(0)" title="修改">',
       '<i class="glyphicon glyphicon-pencil text-primary"></i></a>  ',
       '<a class="op" href="javascript:void(0)" title="删除">',
-      '<i class="glyphicon glyphicon-trash text-danger"></i></a> ',
-      '<a class="op" href="javascript:void(0)" title="重置密码">',
-      '<i class="glyphicon glyphicon-repeat text-warning"></i></a>'
+      '<i class="glyphicon glyphicon-trash text-danger"></i></a>'
     ].join('');
   }
   var $table = $('#table');
-  var clickId ; // 最后点击的id
-  var adminid ; // 员工号
+  var clickId = ''; // 最后点击的id
   /*  $('#editConfirm').click(function () {
    if (clickId != '') {
    $.ajax({
@@ -150,10 +138,11 @@
    });
    }
    });*/
+
   $('#delConfirm').click(function () {
     if (clickId != '') {
       $.ajax({
-        url: '/sys/admins/ajax/del',
+        url: '/sys/depts/ajax/del',
         method: 'POST',
         data: {
           id: clickId
@@ -163,26 +152,9 @@
 //          ajaxReturnMessageForGlobal = result;
           alert(result);
           $table.bootstrapTable('remove', {
-            field: 'aid',
+            field: 'did',
             values: [clickId]
           });
-        }
-      });
-    }
-  });
-  $('#resetConfirm').click(function () {
-    if (clickId != '') {
-      $.ajax({
-        url: '/sys/admins/ajax/reset',
-        method: 'POST',
-        data: {
-          aid: clickId,
-          adminid: adminid
-        },
-        success: function (result) {
-          $('#resetModal').modal('hide');
-//          ajaxReturnMessageForGlobal = result;
-          alert(result);
         }
       });
     }
@@ -195,23 +167,18 @@
     },
     'click [title=删除]': function (e, value, row, index) {
       $('#delModal').modal('show');
-      clickId = row.aid;
-    },
-    'click [title=重置密码]': function(e, value, row, index){
-      $('#resetModal').modal('show');
-      clickId = row.aid;
-      adminid = row.adminid;
+      clickId = row.did;
     }
   };
   $(function () {
     $('#table').bootstrapTable({
-      url: '/sys/admins/ajax/table',
+      url: '/sys/depts/ajax/table',
       height: 550,
       toolbar: '#toolbar',
       search: true,
       showRefresh: true,
 //      showColumns: true,
-//      showExport: true,
+      showExport: true,
       ajaxOptions: {global: false},
       showPaginationSwitch: true,
       pagination: true,
@@ -223,17 +190,11 @@
         return res;
       },
       sortOrder: 'desc',
-      sortName: 'aid',
+      sortName: 'did',
       columns: [{
-        field: 'aid',
+        field: 'did',
         title: 'id',
         visible: false
-      }, {
-        field: 'adminid',
-        title: '员工号'
-      }, {
-        field: 'adminname',
-        title: '姓名'
       }, {
         field: 'department',
         title: '部门'
@@ -256,17 +217,10 @@
       }]
     });
 
-      /* toolbar - add user */
-    $('#add').click(function () {
-      $('#addModal').modal('show');
-    });
-    // 部门，科室，工序，班组 4级联单
+// 部门，科室，工序，班组 4级联单
     var $departmentField = $('#department');
-    var $officeField = $('#office');
-    var $produceField = $('#produce');
-    var $teamField = $('#team');
-    var $adminidField = $('#adminid');
-    var $adminnameField = $('#adminname');
+    var $officeField = $('select[name=office]');
+    var $produceField = $('select[name=produce]');
     var department = $departmentField.val();
     $('#addModal').on('shown.bs.modal', function () {
       $.ajax({
@@ -276,6 +230,7 @@
           department: department
         },
         success: function (result) {
+          $('select[name=office] option:gt(0)').remove();
           for (var i = 0; i < result.length; i++) {
             var $optionHtml = $('<option>' + result[i].office + '</option>');
             $officeField.append($optionHtml);
@@ -292,7 +247,7 @@
             office: office
           },
           success: function (result) {
-            $('#produce option:gt(0)').remove();
+            $('select[name=produce] option:gt(0)').remove();
             for (var i = 0; i < result.length; i++) {
               var $optionHtml = $('<option>' + result[i].produce + '</option>');
               $produceField.append($optionHtml);
@@ -300,86 +255,86 @@
           }
         });
       });
-      $produceField.change(function () {
-        var office = $officeField.val();
-        var produce = $produceField.val();
-        $.ajax({
-          url: '/sys/admins/ajax/getTeam',
-          global: false,
-          data: {
-            department: department,
-            office: office,
-            produce: produce
-          },
-          success: function (result) {
-            $('#team option:gt(0)').remove();
-            for (var i = 0; i < result.length; i++) {
-              var $optionHtml = $('<option>' + result[i].team + '</option>');
-              $teamField.append($optionHtml);
-            }
-          }
-        });
-      });
-    });
-    // 关闭modal的时候清空
-    $('#addModal').on('hide.bs.modal', function () {
-      emptyField(true);
     });
 
-    // 添加考核员按钮提交
+    var $officeInput = $('input[name=office]'); //hidden
+    var $produceInput = $('input[name=produce]'); //hidden
+    var $cancelOfficeBtn = $('.cancelOffice'); // hidden
+    var $cancelProduceBtn = $('.cancelProduce'); // hidden
+    var $addOfficeBtn = $('.newOffice');
+    var $addProduceBtn = $('.newProduce');
+    /* toolbar - add user */
+    $('#add').click(function () {
+      $('#addModal').modal('show');
+      $officeInput.hide();
+      $produceInput.hide();
+      $cancelProduceBtn.hide();
+      $cancelOfficeBtn.hide();
+    });
+    // 关闭modal，恢复原样
+    $('#addModal').on('hidden.bs.modal',function(){
+      $officeField.show().val('');
+      $produceField.show().val('');
+      $addProduceBtn.show();
+      $addOfficeBtn.show();
+    });
+    $addOfficeBtn.click(function () { // 新增office
+      $officeField.hide();
+      $produceField.hide();
+      $addOfficeBtn.hide();
+      $addProduceBtn.hide();
+      $officeInput.show();
+      $produceInput.show();
+      $cancelOfficeBtn.show();
+      $cancelProduceBtn.hide();
+    });
+    $addProduceBtn.click(function () { // 新增工序
+      $produceField.hide();
+      $produceInput.show();
+      $addProduceBtn.hide();
+      $cancelProduceBtn.show();
+    });
+    $cancelOfficeBtn.click(function () { // 取消新增科室
+      $officeField.show();
+      $produceField.show();
+      $addOfficeBtn.show();
+      $addProduceBtn.show();
+      $officeInput.hide();
+      $produceInput.hide();
+      $cancelOfficeBtn.hide();
+      $cancelProduceBtn.hide();
+    });
+    $cancelProduceBtn.click(function () { // 取消新增工序
+      $produceField.show();
+      $produceInput.hide();
+      $addProduceBtn.show();
+      $cancelProduceBtn.hide();
+    });
+    // 提交添加
     $('#addConfirm').click(function () {
-      var adminid = $('#adminid').val().trim();
-      var adminname = $('#adminname').val().trim();
-      var office = $('#office').val();
-      var produce = $('#produce').val();
-      var team = $('#team').val();
-      if (adminid && adminname && office && produce && team) {
-        if (adminid.length <= 10 && adminname.length <= 10) {
-          $.ajax({
-            url: '/sys/admins/ajax/add',
-            method: 'POST',
-            data: {
-              adminid: adminid,
-              adminname: adminname,
-              department: department,
-              office: office,
-              produce: produce,
-              team: team
-            },
-            success: function (result) {
-              $('#addModal').modal('hide');
-//        ajaxReturnMessageForGlobal = result;
-              alert(result);
-              $table.bootstrapTable('refresh');
-            }
-          });
-        } else {
-          alert('输入超过长度，请重新输入');
-          emptyField(false);
-        }
-      } else {
+      var office = $('[name=office]:not(:hidden)').val().trim();
+      var produce = $('[name=produce]:not(:hidden)').val().trim();
+      var team = $('#team').val().trim();
+      if(office && produce && team){
+        $.ajax({
+          url: '/sys/depts/ajax/add',
+          global: false,
+          method: "POST",
+          data: {
+            office: office,
+            produce: produce,
+            team: team
+          },
+          success: function(result){
+            alert(result);
+            $('#addModal').modal('hide');
+            $table.bootstrapTable('refresh');
+          }
+        });
+      }else{
         alert('请填写完整');
       }
     });
-    // 清空
-    function emptyField(bool) {
-      if (bool) { // 是否清空select
-        $('#office option:gt(0)').remove();
-        $('#produce option:gt(0)').remove();
-        $('#team option:gt(0)').remove();
-      }
-      $adminidField.val('');
-      $adminnameField.val('');
-      $adminidField[0].focus();
-    }
-
-      /* ajaxSuccess 全局事件 */
-      /*    $(document).ajaxSuccess(function (evt, request, settings) {
-       var $message = $('<div class="btn btn-danger btn-xs">' + ajaxReturnMessageForGlobal + '</div>');
-       $message.appendTo('#toolbar').fadeOut(5000, function () {
-       $(this).remove();
-       });
-       });*/
   });
 
 </script>

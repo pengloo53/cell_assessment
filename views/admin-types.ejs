@@ -120,7 +120,7 @@
   $('#delConfirm').click(function () {
     if (clickId != '') {
       $.ajax({
-        url: '/admin/staff/ajax/delStaff',
+        url: '/sys/types/ajax/del',
         method: 'POST',
         data: {
           id: clickId
@@ -150,7 +150,7 @@
   };
   $(function () {
     $('#table').bootstrapTable({
-      url: '/admin/staff/ajax/table',
+      url: '/sys/types/ajax/table',
       height: 550,
       toolbar: '#toolbar',
       search: true,
@@ -168,29 +168,20 @@
         return res;
       },
       sortOrder: 'desc',
-      sortName: 'uid',
+      sortName: 'tid',
       columns: [{
-        field: 'uid',
+        field: 'tid',
         title: 'id',
         visible: false
       }, {
-        field: 'userid',
-        title: '员工号'
+        field: 'type1',
+        title: '类别'
       }, {
-        field: 'username',
-        title: '姓名'
+        field: 'type2',
+        title: '类型'
       }, {
-        field: 'department',
-        title: '部门'
-      }, {
-        field: 'office',
-        title: '科室'
-      }, {
-        field: 'produce',
-        title: '工序'
-      }, {
-        field: 'team',
-        title: '班组'
+        field: 'type3',
+        title: '原因'
       }, {
         field: 'operate',
         title: '操作',

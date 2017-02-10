@@ -22,7 +22,7 @@ exports.addUser = function (userid, username, department, office, produce, team,
   });
 };
 // 根据did插入用户
-exports.addUserByDid = function(userid,username,did,crtdate,crttime,crtuser,callback){
+exports.addUserByDid = function (userid, username, did, crtdate, crttime, crtuser, callback) {
   var sql = 'insert into user (userid,username,did,crtdate,crttime,crtuser) values ("' +
       userid + '","' +
       username + '",' +
@@ -36,7 +36,7 @@ exports.addUserByDid = function(userid,username,did,crtdate,crttime,crtuser,call
 };
 
 /**************** add admin *****************/
-exports.addAdmin = function(adminid,adminname,department, office, produce, team, password, type, crtdate, crttime, crtuser, callback){
+exports.addAdmin = function (adminid, adminname, department, office, produce, team, password, type, crtdate, crttime, crtuser, callback) {
   var sql = 'insert into admin (adminid, adminname, did, password, type, crtdate, crttime, crtuser) values ("' +
       adminid + '","' +
       adminname + '",(select did from dept where department = "' +
@@ -49,8 +49,8 @@ exports.addAdmin = function(adminid,adminname,department, office, produce, team,
       crtdate + '","' +
       crttime + '","' +
       crtuser + '")';
-  connect.querySQL(sql,function(err,rows,fields){
-    callback(err,rows,fields);
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
   });
 };
 
@@ -80,7 +80,22 @@ exports.addType = function (type1, type2, type3, crtdate, crttime, crtuser, call
       crtdate + '","' +
       crttime + '","' +
       crtuser + '")';
-  connect.querySQL(sql,function(err,rows,fields){
-    callback(err,rows,fields);
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
+
+/**************** add dept ******************/
+exports.addDept = function (department, office, produce, team, crtdate, crttime, crtuser, callback) {
+  var sql = 'insert into dept (department,office,produce,team,crtdate,crttime,crtuser) values("' +
+      department + '","' +
+      office + '","' +
+      produce + '","' +
+      team + '","' +
+      crtdate + '","' +
+      crttime + '","' +
+      crtuser + '")';
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
   });
 };

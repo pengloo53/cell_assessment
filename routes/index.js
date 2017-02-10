@@ -15,7 +15,8 @@ router.get('/', function(req, res, next) {
 // 登陆页
 router.get('/login',function(req,res,next){
   res.render('login',{
-    title: '考核员登陆页'
+    title: '考核员登陆页',
+    message: ''
   });
 });
 
@@ -31,10 +32,13 @@ router.post('/login',function(req,res,next){
           req.session.adminInfo = rows[0]; // 将管理员信息保存在session中
           res.redirect('/admin');
         }else{
-          res.send('密码错误');
+          res.render('login',{
+            title: '考核员登陆页',
+            message: '账号或者密码错误'
+          });
         }
       }else{
-        errHandle(res,'数据库返回错误',err);
+        errHandle(res,'getAdminInfo return err',err);
       }
     });
   }

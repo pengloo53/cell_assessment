@@ -36,9 +36,14 @@ nav{
 }
 
 /* admin.ejs */
+.addNew ,.cancelNew{
+  line-height: 3em;
+  margin-left: -1.5em;
+}
 /*.ass{
   padding: 2em;
 }*/
+
 /* ************************** login page **********************/
 #home-bak {
   background: url(/images/cover.jpg);
@@ -80,6 +85,5 @@ nav{
   box-shadow: 10px 10px 5px #555555;
   border-radius: 1%;
 }
-
 /* ************************** login page **********************/
 

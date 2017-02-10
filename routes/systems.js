@@ -30,8 +30,8 @@ router.use(function (req, res, next) {
     next();
   }
 });
-/************************ 系统管理员 ***********************/
-// 考核员管理页面
+
+// 考核员管理页面----------------------------------------------------
 router.get('/admins', function (req, res, next) {
   var adminid = req.session.adminInfo.adminid;
   dbSelect.getAdminInfo(adminid, function (err, rows, fields) {
@@ -79,6 +79,7 @@ router.post('/admins/ajax/reset', function(req,res,next){
     }
   });
 });
+
 // ajax - 添加考核员
 router.post('/admins/ajax/add', function (req, res, next) {
   var adminid = req.body.adminid;
@@ -152,15 +153,95 @@ router.get('/admins/ajax/getTeam', function(req,res,next){
   });
 });
 
-// 班次管理
+// 组织管理-----------------------------------------------------------------
 router.get('/depts', function (req, res, next) {
-  res.send('敬请期待...');
+  var adminid = req.session.adminInfo.adminid;
+  dbSelect.getAdminInfo(adminid, function (err, rows, fields) {
+    if (err) {
+      errHandle(res, 'db return err', err);
+    } else {
+      res.render('admin-depts', {
+        title: '组织管理',
+        info: rows[0]
+      });
+    }
+  });
+});
+// bootstrap-table - 组织列表json
+router.get('/depts/ajax/table', function (req, res, next) {
+  var department = req.session.adminInfo.department;
+  dbSelect.getDeptsByDpt(department, function (err, rows, fields) {
+    if (!err) {
+      res.json(rows);
+    } else {
+      errHandle(res, 'getDeptsByDpt return err', err);
+    }
+  });
+});
+// ajax - 删除班组
+router.post('/depts/ajax/del', function(req,res,next){
+  var did = req.body.id;
+  dbDelete.delDept(did,function(err,rows,fields){
+    if(!err){
+      res.send('删除班组成功');
+    }else{
+      errHandle(res,'delDept return err',err);
+    }
+  });
+});
+// ajax - 添加班组
+router.post('/depts/ajax/add', function(req,res,next){
+  var office = req.body.office;
+  var produce = req.body.produce;
+  var team = req.body.team;
+  var department = req.session.adminInfo.department;
+  dbSelect.getDeptBy4(department,office,produce,team,function(err,rows,fields){
+    if(!err){
+      console.log(rows);
+      if(rows.length != 0){
+        res.send('已存在该班组信息');
+      }else{
+        var now = new Date();
+        var crtdate = myUtil.getDate(now);
+        var crttime = myUtil.getTime(now);
+        var crtuser = req.session.adminInfo.adminid;
+        dbInsert.addDept(department,office,produce,team,crtdate,crttime,crtuser,function(err,rows,fields){
+          if(!err){
+            res.send('添加成功');
+          }else{
+            errHandle(res,'addDept return err',err);
+          }
+        });
+      }
+    }else{
+      errHandle(res,'getDeptBy4 return err',err);
+    }
+  });
 });
 
-// 评分类型管理
+// 评分类型管理 ---------------------------------------------------------
 router.get('/types', function (req, res, next) {
-  res.send('敬请期待...');
+  var adminid = req.session.adminInfo.adminid;
+  dbSelect.getAdminInfo(adminid, function (err, rows, fields) {
+    if (err) {
+      errHandle(res, 'db return err', err);
+    } else {
+      res.render('admin-types', {
+        title: '评分类型管理',
+        info: rows[0]
+      });
+    }
+  });
 });
-/************************ 系统管理员 ***********************/
+// bootstrap-table - 评分类别列表json
+router.get('/types/ajax/table', function (req, res, next) {
+  dbSelect.getTypes(function (err, rows, fields) {
+    if (!err) {
+      res.json(rows);
+    } else {
+      errHandle(res, 'getTypes return err', err);
+    }
+  });
+});
 
 module.exports = router;

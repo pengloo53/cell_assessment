@@ -1,25 +1,4 @@
 <footer>
     <script src="/jquery/dist/jquery.js"></script>
     <script src="/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
-    <script src="/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 </footer>
-<script>
-  $(function () {
-      /* 导航激活 */
-    var page = $('#page').html();
-    var $liText = $('ul.nav li');
-    $liText.removeClass('active');
-    for (var i = 0; i < $liText.length; i++) {
-      if (page == $liText[i].innerText) {
-        $liText[i].setAttribute('class', 'active');
-        break;
-      }
-    }
-      /* 修改密码 */
-    $('#setting').click(function () {
-      $('#modPasswordModal').modal('show');
-    });
-
-  });
-</script>

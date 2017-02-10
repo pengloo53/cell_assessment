@@ -23,7 +23,7 @@ exports.delAdmin = function (id, callback) {
 
 // dept table : 根据id删除组织信息
 exports.delDept = function (id, callback) {
-  var sql = 'update user set dmark = "x" where did = ' + id;
+  var sql = 'update dept set dmark = "x" where did = ' + id;
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
@@ -31,7 +31,7 @@ exports.delDept = function (id, callback) {
 
 // type table : 根据id删除类别信息
 exports.delType = function (id, callback) {
-  var sql = 'update user set dmark = "x" where tid = ' + id;
+  var sql = 'update type set dmark = "x" where tid = ' + id;
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });

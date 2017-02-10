@@ -183,6 +183,19 @@ router.post('/staff/ajax/addStaff', function (req, res, next) {
   });
 });
 
+// ajax - 修改密码
+router.post('/admins/ajax/modPassword', function(req,res,next){
+  var password = req.body.password;
+  var aid = req.body.aid;
+  dbUpdate.modPassword(aid, password, function(err,rows,fields){
+    if(!err){
+      res.send('密码修改成功');
+    }else{
+      errHandle(res,'modPassword return err', err);
+    }
+  });
+});
+
 // 统计页面-个人LOG
 router.get('/stat/person', function (req, res, next) {
   res.send('敬请期待...');

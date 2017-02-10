@@ -22,22 +22,22 @@ exports.getUserInfo = function (userid, callback) {
 };
 // 根据部门系统管理员获取用户列表
 /*exports.getUsersBySys = function (adminid, offset, limit, sort, order, callback) {
-  var sql = 'select uid, userid, username,D1.department,D1.office,D1.produce,D1.team ' +
-      'from user U ' +
-      'left join dept D1 on U.did=D1.did ' +
-      'left join dept D2 on D1.department=D2.department ' +
-      'left join admin A on A.did=D2.did ' +
-      'where U.dmark != "x" ' +
-      'and D1.dmark != "x" ' +
-      'and D2.dmark != "x" ' +
-      'and A.dmark != "x" ' +
-      'and A.adminid="' + adminid + '" ' +
-      'order by ' + sort + ' ' + order + ' ' +
-      'limit ' + offset + ',' + limit;
-  connect.querySQL(sql, function (err, rows, fields) {
-    callback(err, rows, fields);
-  });
-};*/
+ var sql = 'select uid, userid, username,D1.department,D1.office,D1.produce,D1.team ' +
+ 'from user U ' +
+ 'left join dept D1 on U.did=D1.did ' +
+ 'left join dept D2 on D1.department=D2.department ' +
+ 'left join admin A on A.did=D2.did ' +
+ 'where U.dmark != "x" ' +
+ 'and D1.dmark != "x" ' +
+ 'and D2.dmark != "x" ' +
+ 'and A.dmark != "x" ' +
+ 'and A.adminid="' + adminid + '" ' +
+ 'order by ' + sort + ' ' + order + ' ' +
+ 'limit ' + offset + ',' + limit;
+ connect.querySQL(sql, function (err, rows, fields) {
+ callback(err, rows, fields);
+ });
+ };*/
 exports.getUsersBySysNoPage = function (adminid, callback) {
   var sql = 'select uid, userid, username,D1.department,D1.office,D1.produce,D1.team ' +
       'from user U ' +
@@ -54,34 +54,34 @@ exports.getUsersBySysNoPage = function (adminid, callback) {
   });
 };
 /*exports.getUsersNumBySys = function (adminid, callback) {
-  var sql = 'select count(*) count from user U ' +
-      'left join dept D1 on U.did=D1.did ' +
-      'left join dept D2 on D1.department=D2.department ' +
-      'left join admin A on A.did=D2.did ' +
-      'where U.dmark != "x" ' +
-      'and D1.dmark != "x" ' +
-      'and D2.dmark != "x" ' +
-      'and A.dmark != "x" ' +
-      'and A.adminid="' + adminid + '"';
-  connect.querySQL(sql, function (err, rows, fields) {
-    callback(err, rows, fields);
-  });
-};*/
+ var sql = 'select count(*) count from user U ' +
+ 'left join dept D1 on U.did=D1.did ' +
+ 'left join dept D2 on D1.department=D2.department ' +
+ 'left join admin A on A.did=D2.did ' +
+ 'where U.dmark != "x" ' +
+ 'and D1.dmark != "x" ' +
+ 'and D2.dmark != "x" ' +
+ 'and A.dmark != "x" ' +
+ 'and A.adminid="' + adminid + '"';
+ connect.querySQL(sql, function (err, rows, fields) {
+ callback(err, rows, fields);
+ });
+ };*/
 
 // 获取考核员的用户列表
 /*exports.getUsersByAdmin = function (adminid, offset, limit, sort, order, callback) {
-  var sql = 'select * from user U ' +
-      'left join dept D on U.did = D.did' +
-      'left join admin A on A.did = U.did ' +
-      'where U.dmark != "x" ' +
-      'and A.dmark != "x" ' +
-      'and A.adminid="' + adminid + '" ' +
-      'order by ' + sort + ' ' + order + ' ' +
-      'limit ' + offset + ',' + limit;
-  connect.querySQL(sql, function (err, rows, fields) {
-    callback(err, rows, fields);
-  });
-};*/
+ var sql = 'select * from user U ' +
+ 'left join dept D on U.did = D.did' +
+ 'left join admin A on A.did = U.did ' +
+ 'where U.dmark != "x" ' +
+ 'and A.dmark != "x" ' +
+ 'and A.adminid="' + adminid + '" ' +
+ 'order by ' + sort + ' ' + order + ' ' +
+ 'limit ' + offset + ',' + limit;
+ connect.querySQL(sql, function (err, rows, fields) {
+ callback(err, rows, fields);
+ });
+ };*/
 exports.getUsersByAdminNoPage = function (adminid, callback) {
   var sql = 'select uid, userid, username, D.department, D.office, D.produce, D.team ' +
       'from user U ' +
@@ -96,15 +96,15 @@ exports.getUsersByAdminNoPage = function (adminid, callback) {
   });
 };
 /*exports.getUsersNumByAdmin = function (adminid, callback) {
-  var sql = 'select count(*) count from user U ' +
-      'left join admin A on A.did = U.did ' +
-      'where U.dmark != "x" ' +
-      'and A.dmark != "x" ' +
-      'and A.adminid="' + adminid + '"';
-  connect.querySQL(sql, function (err, rows, fields) {
-    callback(err, rows, fields);
-  });
-};*/
+ var sql = 'select count(*) count from user U ' +
+ 'left join admin A on A.did = U.did ' +
+ 'where U.dmark != "x" ' +
+ 'and A.dmark != "x" ' +
+ 'and A.adminid="' + adminid + '"';
+ connect.querySQL(sql, function (err, rows, fields) {
+ callback(err, rows, fields);
+ });
+ };*/
 
 /***************************************************************/
 
@@ -165,9 +165,11 @@ exports.getSumGroupByUserid = function (scoredate, callback) {
 /************************************************************/
 
 /********************* dept table ***************************/
-// 获取部门信息列表
-exports.getDepts = function (callback) {
-  var sql = 'select * from dept where dmark != "x"';
+// 根据部门获取组织列表
+exports.getDeptsByDpt = function (department, callback) {
+  var sql = 'select * from dept where dmark != "x" ' +
+      'and department ="' + department + '" ' +
+      'and office is not null';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
@@ -180,36 +182,47 @@ exports.getDeptById = function (did, callback) {
   });
 };
 // 根据部门获取有哪些科室
-exports.getOfficeByDpt = function(department, callback){
+exports.getOfficeByDpt = function (department, callback) {
   var sql = 'select distinct office from dept ' +
       'where department = "' + department + '" ' +
       'and dmark != "x" ' +
       'and office is not null';
-  connect.querySQL(sql, function(err,rows,fields){
-    callback(err,rows,fields);
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
   });
 };
 // 根据部门科室获取有哪些工序
-exports.getProduceByDptAndOffice = function(department, office, callback){
+exports.getProduceByDptAndOffice = function (department, office, callback) {
   var sql = 'select distinct produce from dept ' +
       'where department = "' + department + '" ' +
       'and office = "' + office + '" ' +
       'and dmark != "x" ' +
       'and produce is not null';
-  connect.querySQL(sql, function(err,rows,fields){
-    callback(err,rows,fields);
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
   });
 };
 // 根据部门科室工序获取班组信息
-exports.getTeamByDptAndOfficeAndProduce = function(department, office, produce, callback){
+exports.getTeamByDptAndOfficeAndProduce = function (department, office, produce, callback) {
   var sql = 'select distinct team from dept ' +
       'where department = "' + department + '" ' +
       'and office = "' + office + '" ' +
       'and produce = "' + produce + '" ' +
       'and dmark != "x" ' +
       'and team is not null';
-  connect.querySQL(sql, function(err,rows,fields){
-    callback(err,rows,fields);
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
+// 判断是否存在该组织信息
+exports.getDeptBy4 = function (department, office, produce, team, callback) {
+  var sql = 'select * from dept ' +
+      'where department = "' + department + '" ' +
+      'and office = "' + office + '" ' +
+      'and produce="' + produce + '" ' +
+      'and team = "' + team + '"';
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
   });
 };
 
