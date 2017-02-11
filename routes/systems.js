@@ -243,5 +243,43 @@ router.get('/types/ajax/table', function (req, res, next) {
     }
   });
 });
+// ajax - 添加type
+router.post('/types/ajax/add',function(req,res,next){
+  var type1 = req.body.type1;
+  var type2 = req.body.type2;
+  var type3 = req.body.type3;
+  dbSelect.getTypeBy3(type1,type2,type3,function(err,rows,fields){
+    if(!err){
+      if(rows.length == 0){
+        var now = new Date();
+        var crtdate = myUtil.getDate(now);
+        var crttime = myUtil.getTime(now);
+        var crtuser = req.session.adminInfo.adminid;
+        dbInsert.addType(type1,type2,type3,crtdate,crttime,crtuser,function(err,rows,fields){
+          if(!err){
+            res.send('添加成功');
+          }else{
+            errHandle(res,'addType return err',err);
+          }
+        });
+      }else{
+        res.send('已存在该原因，无需添加');
+      }
+    }else{
+      errHandle(res,'getTypeBy3 return err',err);
+    }
+  });
+});
+// ajax - 删除type
+router.post('/types/ajax/del',function(req,res,next){
+  var tid = req.body.id;
+  dbDelete.delType(tid,function(err,rows,fields){
+    if(!err){
+      res.send('删除原因成功');
+    }else{
+      errHandle(res,'delType return err', err);
+    }
+  });
+});
 
 module.exports = router;

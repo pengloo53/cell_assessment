@@ -266,8 +266,8 @@
     /* toolbar - add user */
     $('#add').click(function () {
       $('#addModal').modal('show');
-      $officeInput.hide();
-      $produceInput.hide();
+      $officeInput.hide().val('');
+      $produceInput.hide().val('');
       $cancelProduceBtn.hide();
       $cancelOfficeBtn.hide();
     });

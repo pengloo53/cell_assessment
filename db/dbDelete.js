@@ -38,7 +38,7 @@ exports.delType = function (id, callback) {
 };
 
 // log table : 根据id删除日志信息
-exports.delType = function (id, callback) {
+exports.delLog = function (id, callback) {
   var sql = 'update log set dmark = "x" where lid = ' + id;
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);

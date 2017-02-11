@@ -265,4 +265,14 @@ exports.getType3ByType12 = function (type1, type2, callback) {
     callback(err, rows, fields);
   });
 };
+// 判断是否存在该原因
+exports.getTypeBy3 = function (type1, type2, type3, callback) {
+  var sql = 'select * from type ' +
+      'where type1 = "' + type1 + '" ' +
+      'and type2 = "' + type2 + '" ' +
+      'and type3 = "' + type3 + '"';
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
 /***********************************************************/
