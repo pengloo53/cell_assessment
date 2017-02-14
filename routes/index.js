@@ -28,7 +28,7 @@ router.post('/login',function(req,res,next){
   if(adminid && passwd){
     dbSelect.getAdminInfo(adminid,function(err,rows,fields){
       if(!err){
-        if(rows[0].password == passwd){
+        if(rows[0].password == passwd && rows[0].dmark != "x"){
           req.session.adminInfo = rows[0]; // 将管理员信息保存在session中
           res.redirect('/admin');
         }else{

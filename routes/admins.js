@@ -121,7 +121,7 @@ router.get('/staff', function (req, res, next) {
 router.get('/staff/ajax/table', function (req, res, next) {
   var adminid = req.session.adminInfo.adminid;
   var adminType = req.session.adminInfo.type;
-  if (adminType == 'sys') {
+  if (adminType != 'admin') {
     dbSelect.getUsersBySysNoPage(adminid, function (err, rows, fields) {
       if (!err) {
         res.json(rows);
@@ -198,17 +198,91 @@ router.post('/admins/ajax/modPassword', function(req,res,next){
 
 // 统计页面-个人LOG
 router.get('/stat/person', function (req, res, next) {
-  res.send('敬请期待...');
+  var adminid = req.session.adminInfo.adminid;
+  dbSelect.getAdminInfo(adminid, function (err, rows, fields) {
+    if (err) {
+      errHandle(res, 'db return err', err);
+    } else {
+      // console.log(rows);
+      res.render('admin-stat-person', {
+        title: '个人记录报表',
+        info: rows[0]
+      });
+    }
+  });
+});
+// 个人Log - Bootstrap table json
+router.get('/stat/person/table', function(req,res,next){
+  var adminid = req.session.adminInfo.adminid;
+  var type = req.session.adminInfo.type;
+  var now = new Date();
+  var now1 = new Date(now.getFullYear(),now.getMonth()+1,0);
+  var firstDay = myUtil.getDate(now).substring(0,6) + '01';
+  var lastDay = myUtil.getDate(now).substring(0,6) + '' + now1.getDate();
+  var scoredate1 = req.query.scoredate1 || firstDay;
+  var scoredate2 = req.query.scoredate2 || lastDay;
+  if(type != 'admin'){
+    dbSelect.getLogBySysNoPage(adminid,scoredate1,scoredate2,function(err,rows,fields){
+      if(!err){
+        res.json(rows);
+      }else{
+        errHandle(res,'getLogBySysNoPage return err', err);
+      }
+    });
+  }else{
+    dbSelect.getLogByAdminNoPage(adminid,scoredate1,scoredate2,function(err,rows,fields){
+      if(!err){
+        res.json(rows);
+      }else{
+        errHandle(res,'getLogByAdminNoPage return err', err);
+      }
+    });
+  }
+});
+// 个人Log 删除
+router.post('/stat/person/del', function(req,res,next){
+  var lid = req.body.id;
+  dbDelete.delLog(lid, function(err,rows,fields){
+    if(!err){
+      res.send('成功删除个人记录');
+    }else{
+      errHandle(res,'delLog return err',err);
+    }
+  });
 });
 
 // 统计页面-个人统计
 router.get('/stat/sum', function (req, res, next) {
-  res.send('敬请期待...');
+  var adminid = req.session.adminInfo.adminid;
+  dbSelect.getAdminInfo(adminid, function (err, rows, fields) {
+    if (err) {
+      errHandle(res, 'db return err', err);
+    } else {
+      // console.log(rows);
+      res.render('admin-stat-sum', {
+        title: '统计报表',
+        info: rows[0]
+      });
+    }
+  });
 });
 
 // 统计页面-类型统计
 router.get('/stat/type', function (req, res, next) {
-  res.send('敬请期待...');
+  var adminid = req.session.adminInfo.adminid;
+  dbSelect.getAdminInfo(adminid, function (err, rows, fields) {
+    if (err) {
+      errHandle(res, 'db return err', err);
+    } else {
+      // console.log(rows);
+      res.render('admin-stat-type', {
+        title: '减分占比报表',
+        info: rows[0]
+      });
+    }
+  });
 });
+
+
 
 module.exports = router;

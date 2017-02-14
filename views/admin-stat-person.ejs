@@ -1,0 +1,183 @@
+<% include layout/common-head.ejs %>
+<body>
+<% include layout/common-header.ejs %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 hidden-sm hidden-xs">
+            <% include layout/common-nav.ejs %>
+        </div>
+        <div class="col-lg-9 col-md-9">
+            <div class="content">
+                <span class="hidden" id="page"><%= title %></span>
+                <h3><%= title %></h3>
+                <div class="staff">
+                    <div id="toolbar">
+                        <form class="form-inline" action="">
+                            <div id="datepicker" class="form-group">
+                                <label for="scoredate" class="control-label">日期：</label>
+                                <input type="text" class="form-control" name="scoredate1" placeholder="从日期"> -
+                                <input type="text" class="form-control" name="scoredate2" placeholder="到日期">
+                            </div>
+                            <!--<div class="form-group">
+                                <label for="userid" class="control-label">员工号：</label>
+                                <input type="text" class="form-control" name="userid" placeholder="员工号">
+                            </div>-->
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-warning btn-sm" class="search">查找</button>
+                            </div>
+                        </form>
+                    </div>
+                    <table id="table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal -->
+<% include component/modal-modPassword.ejs %>
+<% include component/modal-delConfirm.ejs %>
+
+<% include layout/common-footer.ejs %>
+<!-- bootstrap table -->
+<script src="/bootstrap-table/dist/bootstrap-table.js"></script>
+<script src="/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
+<script src="/bootstrap-table/dist/extensions/export/bootstrap-table-export.js"></script>
+<script src="/bootstrap-table/lib/tableExport.js"></script>
+<script src="/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+<script src="/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script src="/javascripts/common.js"></script>
+<script>
+  function operateFormatter(value, row, index) {
+    return [
+      '<a class="op" href="javascript:void(0)" title="删除">',
+      '<i class="glyphicon glyphicon-trash text-danger"></i></a>'
+    ].join('');
+  }
+  var $table = $('#table');
+  var clickId = ''; // 最后点击的id
+  $('#delConfirm').click(function () {
+    if (clickId != '') {
+      $.ajax({
+        url: '/admin/stat/person/del',
+        method: 'POST',
+        data: {
+          id: clickId
+        },
+        success: function (result) {
+          $('#delModal').modal('hide');
+//          ajaxReturnMessageForGlobal = result;
+          alert(result);
+          $table.bootstrapTable('remove', {
+            field: 'lid',
+            values: [clickId]
+          });
+        }
+      });
+    }
+  });
+  window.operateEvents = {
+    'click [title=删除]': function (e, value, row, index) {
+      $('#delModal').modal('show');
+      clickId = row.lid;
+    }
+  };
+  $(function () {
+    var $scoredate1 = $('input[name=scoredate1]');
+    var $scoredate2 = $('input[name=scoredate2]');
+    $scoredate1.val('');
+    $scoredate2.val('');
+    $('#table').bootstrapTable({
+      url: '/admin/stat/person/table',
+      height: 550,
+      toolbar: '#toolbar',
+      search: true,
+//      showRefresh: true,
+      showColumns: true,
+      showExport: true,
+      ajaxOptions: {global: false},
+//      showPaginationSwitch: true,
+      pagination: true,
+      sidePagination: 'client',
+      pageNumber: 1,
+      pageSize: 10,
+      pageList: '[10, 20, 50, ALL]',
+      responseHandler: function (res) {
+        return res;
+      },
+      queryParams: function(params){
+        return {
+          scoredate1: $scoredate1.val(),
+          scoredate2: $scoredate2.val()
+        }
+      },
+      sortOrder: 'desc',
+      sortName: 'lid',
+      columns: [{
+        field: 'lid',
+        title: 'id',
+        visible: false
+      }, {
+        field: 'userid',
+        title: '员工号'
+      }, {
+        field: 'username',
+        title: '姓名'
+      }, {
+        field: 'type1',
+        title: '类别',
+        formatter: function(value,row,index){
+          if(value == '加分'){
+            return '<span class="label label-danger">' + value + '</span>';
+          }else{
+            return '<span class="label label-success">' + value + '</span>';
+          }
+        }
+      }, {
+        field: 'type2',
+        title: '类型'
+      },{
+        field: 'type3',
+        title: '原因'
+      },{
+        field: 'score',
+        title: '分数',
+        formatter: function(value,row,index){
+          return '<span class="badge">' + value + '</span>';
+        }
+      },{
+        field: 'scoredate',
+        title: '日期',
+        width: '10px'
+      },{
+        field: 'operate',
+        title: '操作',
+        align: 'center',
+        valign: 'middle',
+        width: '5px',
+        events: operateEvents,
+        formatter: operateFormatter
+      }]
+    });
+    /* toolbar */
+    $('form').submit(function(e){
+      e.preventDefault(); // 取消默认提交
+      if($scoredate1.val() > $scoredate2.val()){
+        alert('日期不合理，请重新输入');
+      }else{
+        $table.bootstrapTable('refresh');
+      }
+    });
+    // 日期选择
+    $('#datepicker input').datepicker({
+      format: "yyyymmdd",
+      weekStart: 7,
+      language: "zh-CN",
+      daysOfWeekHighlighted: "0,6",
+      autoclose: true
+    });
+  });
+
+</script>
+</body>
+<% include layout/common-foot.ejs %>

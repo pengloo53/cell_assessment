@@ -40,6 +40,9 @@ nav{
   line-height: 3em;
   margin-left: -1.5em;
 }
+input[name=scoredate1],input[name=scoredate2]{
+  max-width: 100px;
+}
 /*.ass{
   padding: 2em;
 }*/

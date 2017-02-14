@@ -140,9 +140,59 @@ exports.getAdminInfo = function (adminid, callback) {
 /*****************************************************************/
 
 /********************* log table ********************************/
-// 获取log信息列表
-exports.getLog = function (callback) {
-  var sql = 'select * from log where dmark != "x"';
+// 获取考核员下员工log信息列表：服务器分页显示，当月
+/*exports.getLog = function (adminid, scoredate1,scoredate2, sort,order,offset,limit, callback) {
+  var sql = 'select * from log L' +
+      'left join user U on U.userid=L.userid' +
+      'left join dept D1 on U.did=D1.did' +
+      'left join dept D2 on D1.department=D2.department' +
+      'left join admin A on A.did=D2.did' +
+      'where A.adminid="' + adminid + '" ' +
+      'and L.scoredate >= "' + scoredate1 + '" ' +
+      'and L.scoredate <= "' + scoredate2 + '" ' +
+      'and L.dmark != "x" ' +
+      'and U.dmark != "x" ' +
+      'and D1.dmark != "x" ' +
+      'and D2.dmark != "x" ' +
+      'and A.dmark != "x" ' +
+      'order by "'+ sort +' ' + order + ' ' +
+      'limit ' + offset + ',' + limit;
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};*/
+// 获取系统管理员下员工log信息列表：客户端分页显示，默认当月
+exports.getLogBySysNoPage = function (adminid, scoredate1,scoredate2, callback) {
+  var sql = 'select L.lid, L.userid, U.username,L.type1,L.type2,L.type3,L.score,L.scoredate from log L ' +
+      'left join user U on U.userid=L.userid ' +
+      'left join dept D1 on U.did=D1.did ' +
+      'left join dept D2 on D1.department=D2.department ' +
+      'left join admin A on A.did=D2.did ' +
+      'where A.adminid="' + adminid + '" ' +
+      'and L.scoredate >= "' + scoredate1 + '" ' +
+      'and L.scoredate <= "' + scoredate2 + '" ' +
+      'and L.dmark != "x" ' +
+      'and U.dmark != "x" ' +
+      'and D1.dmark != "x" ' +
+      'and D2.dmark != "x" ' +
+      'and A.dmark != "x" ';
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
+// 获取考核员下员工log信息列表：客户端分页显示，默认当月
+exports.getLogByAdminNoPage = function(adminid,scoredate1,scoredate2,callback){
+  var sql = 'select L.lid, L.userid, U.username,L.type1,L.type2,L.type3,L.score,L.scoredate from log L ' +
+      'left join user U on U.userid=L.userid ' +
+      'left join dept D on U.did=D.did ' +
+      'left join admin A on A.did=D.did ' +
+      'where A.adminid="' + adminid + '" ' +
+      'and L.scoredate >= "' + scoredate1 + '" ' +
+      'and L.scoredate <= "' + scoredate2 + '" ' +
+      'and L.dmark != "x" ' +
+      'and U.dmark != "x" ' +
+      'and D.dmark != "x" ' +
+      'and A.dmark != "x" ';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
