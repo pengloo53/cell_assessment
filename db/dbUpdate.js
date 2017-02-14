@@ -10,7 +10,6 @@ var connect = require('./connect.js');
 exports.modUserById = function (id, callback) {
   // var sql = 'update user set '
 };
-
 exports.addDelUser = function (userid, username, callback) {
   var sql = 'update user set dmark = "" , username = "' + username + '" ' +
       'where userid = ' + userid;
@@ -18,7 +17,17 @@ exports.addDelUser = function (userid, username, callback) {
     callback(err, rows, fields);
   });
 };
-
+exports.addDelUserBySys = function (userid, username, department, office, produce, team, callback) {
+  var sql = 'update user set dmark = "" , username = "' + username + '", ' +
+      'did=(select did from dept where department = "' + department + '" ' +
+      'and office= "' + office + '" ' +
+      'and produce = "' + produce + '" ' +
+      'and team="' + team + '") ' +
+      'where userid = ' + userid;
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
 
 /******************* admin table ******************/
 exports.addDelAdmin = function (adminid, adminname, department, office, produce, team, callback) {
@@ -27,7 +36,7 @@ exports.addDelAdmin = function (adminid, adminname, department, office, produce,
       'and office= "' + office + '" ' +
       'and produce = "' + produce + '" ' +
       'and team="' + team + '") ' +
-      'where aid = ' + adminid;
+      'where adminid = ' + adminid;
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
@@ -48,3 +57,18 @@ exports.modPassword = function (aid, password, callback) {
   });
 };
 
+/********************* dept table **********************/
+exports.addDelDept = function(did,callback){
+  var sql = 'update dept set dmark = "" where did = ' + did;
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
+
+/********************* type table **********************/
+exports.addDelType = function(tid,callback){
+  var sql = 'update type set dmark = "" where tid = ' + tid;
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};

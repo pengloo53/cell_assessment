@@ -99,6 +99,7 @@ router.post('/admins/ajax/add', function (req, res, next) {
       res.send('添加成功');
     }else if(err.code == 'ER_DUP_ENTRY'){ // 主键重复
       dbSelect.getAdminInfo(adminid, function(err,rows,fields){
+        console.log(rows[0]);
         if(!err && rows[0].dmark == "x"){
           dbUpdate.addDelAdmin(adminid,adminname,department, office, produce, team, function(err,rows,fields){
             if(!err){
@@ -118,7 +119,7 @@ router.post('/admins/ajax/add', function (req, res, next) {
 });
 // ajax - Get office by department
 router.get('/admins/ajax/getOffice' , function(req,res,next){
-  var department = req.query.department;
+  var department = req.session.adminInfo.department;
   dbSelect.getOfficeByDpt(department,function(err,rows,fields){
     if(!err){
       res.send(rows);
@@ -129,7 +130,7 @@ router.get('/admins/ajax/getOffice' , function(req,res,next){
 });
 // ajax - Get produce by department and office
 router.get('/admins/ajax/getProduce', function(req,res,next){
-  var department = req.query.department;
+  var department = req.session.adminInfo.department;
   var office = req.query.office;
   dbSelect.getProduceByDptAndOffice(department,office,function(err,rows,fields){
     if(!err){
@@ -141,7 +142,7 @@ router.get('/admins/ajax/getProduce', function(req,res,next){
 });
 // ajax - Get team by department and office and produce
 router.get('/admins/ajax/getTeam', function(req,res,next){
-  var department = req.query.department;
+  var department = req.session.adminInfo.department;
   var office = req.query.office;
   var produce = req.query.produce;
   dbSelect.getTeamByDptAndOfficeAndProduce(department,office,produce,function(err,rows,fields){
@@ -198,9 +199,7 @@ router.post('/depts/ajax/add', function(req,res,next){
   dbSelect.getDeptBy4(department,office,produce,team,function(err,rows,fields){
     if(!err){
       console.log(rows);
-      if(rows.length != 0){
-        res.send('已存在该班组信息');
-      }else{
+      if(rows.length == 0){
         var now = new Date();
         var crtdate = myUtil.getDate(now);
         var crttime = myUtil.getTime(now);
@@ -212,6 +211,13 @@ router.post('/depts/ajax/add', function(req,res,next){
             errHandle(res,'addDept return err',err);
           }
         });
+      }else if(rows[0].dmark == "x"){
+        var did = rows[0].did;
+        dbUpdate.addDelDept(did, function(err,rows,fields){
+          res.send('添加成功');
+        });
+      }else{
+        res.send('已存在该班组信息');
       }
     }else{
       errHandle(res,'getDeptBy4 return err',err);
@@ -261,6 +267,11 @@ router.post('/types/ajax/add',function(req,res,next){
           }else{
             errHandle(res,'addType return err',err);
           }
+        });
+      }else if(rows[0].dmark == "x"){
+        var tid = rows[0].tid;
+        dbUpdate.addDelType(tid, function(err,rows,fields){
+          res.send('添加成功');
         });
       }else{
         res.send('已存在该原因，无需添加');

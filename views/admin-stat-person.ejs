@@ -119,13 +119,16 @@
         visible: false
       }, {
         field: 'userid',
-        title: '员工号'
+        title: '员工号',
+        valign: 'middle'
       }, {
         field: 'username',
-        title: '姓名'
+        title: '姓名',
+        valign: 'middle'
       }, {
         field: 'type1',
         title: '类别',
+        valign: 'middle',
         formatter: function(value,row,index){
           if(value == '加分'){
             return '<span class="label label-danger">' + value + '</span>';
@@ -135,20 +138,24 @@
         }
       }, {
         field: 'type2',
-        title: '类型'
+        title: '类型',
+        valign: 'middle'
       },{
         field: 'type3',
-        title: '原因'
+        title: '原因',
+        valign: 'middle'
       },{
         field: 'score',
         title: '分数',
+        valign: 'middle',
         formatter: function(value,row,index){
           return '<span class="badge">' + value + '</span>';
         }
       },{
         field: 'scoredate',
         title: '日期',
-        width: '10px'
+        width: '10px',
+        valign: 'middle'
       },{
         field: 'operate',
         title: '操作',

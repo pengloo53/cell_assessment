@@ -129,7 +129,7 @@ exports.getAdminsBySys = function (adminid, callback) {
 
 // 根据员工号获取单个考核员信息
 exports.getAdminInfo = function (adminid, callback) {
-  var sql = 'select * from admin A ' +
+  var sql = 'select aid, A.did,adminid, password,type,adminname,department,office,produce,team, A.dmark from admin A ' +
       'left join dept D on D.did = A.did ' +
       'where adminid= "' + adminid + '"';
   connect.querySQL(sql, function (err, rows, fields) {

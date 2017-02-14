@@ -182,6 +182,36 @@ router.post('/staff/ajax/addStaff', function (req, res, next) {
     }
   });
 });
+// ajax 系统管理员添加人员信息
+router.post('/staff/ajax/addStaffBySys', function (req, res, next) {
+  var userid = req.body.userid;
+  var username = req.body.username;
+  var now = new Date();
+  var crtdate = myUtil.getDate(now);
+  var crttime = myUtil.getTime(now);
+  var crtuser = req.session.adminInfo.adminid;
+  var department = req.session.adminInfo.department;
+  var office = req.body.office;
+  var produce = req.body.produce;
+  var team = req.body.team;
+  dbInsert.addUser(userid, username, department,office,produce,team, crtdate, crttime, crtuser, function (err, rows, fields) {
+    if (!err) {
+      res.send('添加成功');
+    } else if (err.code == 'ER_DUP_ENTRY') {  // 主键不允许重复数据
+      dbSelect.getUserInfo(userid, function (err, rows, fields) {
+        if (!err && rows[0].dmark == 'x') {
+          dbUpdate.addDelUserBySys(userid, username,department,office,produce,team, function (err, rows, fields) {
+            res.send('添加成功');
+          });
+        } else {
+          res.send('已存在该员工，不能重复添加');
+        }
+      });
+    } else {
+      errHandle(res, 'addUserByDid return err', err);
+    }
+  });
+});
 
 // ajax - 修改密码
 router.post('/admins/ajax/modPassword', function(req,res,next){
