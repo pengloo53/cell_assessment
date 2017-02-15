@@ -43,6 +43,9 @@ nav{
 input[name=scoredate1],input[name=scoredate2]{
   max-width: 100px;
 }
+.sum #scoredate{
+  max-width: 85px;
+}
 /*.ass{
   padding: 2em;
 }*/

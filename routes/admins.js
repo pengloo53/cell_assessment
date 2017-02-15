@@ -296,6 +296,31 @@ router.get('/stat/sum', function (req, res, next) {
     }
   });
 });
+// 个人统计sum - bootstrap table
+router.get('/stat/sum/table', function(req,res,next){
+  var adminid = req.session.adminInfo.adminid;
+  var type = req.session.adminInfo.type;
+  var now = new Date();
+  var month = myUtil.getDate(now).substring(0,6); // 当月，如：201702
+  var scoredate = req.query.scoredate || month;
+  if(type == 'admin'){
+    dbSelect.getSumByAdmin(adminid,scoredate,function(err,rows,fields){
+      if(!err){
+        res.json(rows);
+      }else{
+        errHandle(res,'getSumByAdmin return err',err);
+      }
+    });
+  }else{
+    dbSelect.getSumBySys(adminid,scoredate,function(err,rows,fields){
+      if(!err){
+        res.json(rows);
+      }else{
+        errHandle(res,'getSumBySys return err',err);
+      }
+    });
+  }
+});
 
 // 统计页面-类型统计
 router.get('/stat/type', function (req, res, next) {
