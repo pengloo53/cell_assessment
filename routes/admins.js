@@ -338,6 +338,36 @@ router.get('/stat/type', function (req, res, next) {
   });
 });
 
+// 类型统计 - bootstrap table
+router.get('/stat/type/table', function(req,res,next){
+  var type = req.session.adminInfo.type;
+  var department = req.session.adminInfo.department;
+  var now = new Date();
+  var month = myUtil.getDate(now).substring(0,6); // 当月，如：201702
+  var scoredate = req.query.scoredate || month;
+  if(type == 'admin'){
+    var did = req.session.adminInfo.did;
+    dbSelect.getMinusCountByDid(did,scoredate,function(err,rows,fields){
+      if(!err){
+        res.json(rows);
+      }else{
+        errHandle(res,'getMinusCountByDid return err',err);
+      }
+    });
+  }else{
+    var office = req.query.office;
+    var produce = req.query.produce;
+    var team = req.query.team;
+    dbSelect.getMinusCountByDpt(department,office,produce,team,scoredate,function(err,rows,fields){
+      if(!err){
+        res.json(rows);
+      }else{
+        errHandle(res,'getMinusCountByDpt return err',err);
+      }
+    });
+  }
+});
+
 
 
 module.exports = router;

@@ -8,8 +8,14 @@ var dbUpdate = require('../db/dbUpdate.js');
 var errHandle = require('../lib/errHandle.js');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/:department/:office/:produce/:team', function(req, res, next) {
+  var department = req.params.department;
+  var office = req.params.office;
+  var produce = req.params.produce;
+  var team = req.params.team;
+  res.render('index',{
+    title: department + office + produce + team
+  });
 });
 
 // 登陆页

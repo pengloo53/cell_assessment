@@ -231,7 +231,7 @@ exports.getSumBySys = function (adminid, scoredate, callback) {
 };
 
 // 个人sum报表 - 考核员: 默认当月
-exports.getSumByAdmin = function (adminid,scoredate,callback) {
+exports.getSumByAdmin = function (adminid, scoredate, callback) {
   var sql = 'select L.userid, U.username,D.office,D.produce,D.team,' +
       '100+SUM(score) sum,' +
       'SUM(case WHEN L.type1="加分" THEN score ELSE 0 END) plus,' +
@@ -247,6 +247,39 @@ exports.getSumByAdmin = function (adminid,scoredate,callback) {
       'and D.dmark != "x" ' +
       'and A.dmark != "x" ' +
       'group by L.userid';
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
+
+// 按班组减分行数统计 - by did
+exports.getMinusCountByDid = function (did, scoredate, callback) {
+  var sql = 'select L.type2,count(*) count from log L ' +
+      'left join user U on U.userid = L.userid ' +
+      'where U.did=' + did + ' ' +
+      'and L.dmark != "x" ' +
+      'and U.dmark != "x" ' +
+      'and L.scoredate like "' + scoredate + '%" ' +
+      'and L.type1 = "减分"' +
+      'group by L.type2';
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
+// 按班组减分行数统计 - by department office produce team
+exports.getMinusCountByDpt = function (department, office, produce, team, scoredate, callback) {
+  var sql = 'select L.type2,count(*) count from log L ' +
+      'left join user U on U.userid = L.userid where U.did =' +
+      '(select did from dept ' +
+      'where department = "' + department + '" ' +
+      'and office = "' + office + '" ' +
+      'and produce = "' + produce + '" ' +
+      'and team = "' + team + '") ' +
+      'and L.dmark != "x" ' +
+      'and U.dmark != "x" ' +
+      'and L.scoredate like "' + scoredate + '%" ' +
+      'and L.type1 = "减分"' +
+      'group by L.type2';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });

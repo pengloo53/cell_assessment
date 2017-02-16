@@ -43,12 +43,21 @@ nav{
 input[name=scoredate1],input[name=scoredate2]{
   max-width: 100px;
 }
-.sum #scoredate{
+.sum #scoredate,.type #scoredate{
   max-width: 85px;
 }
-/*.ass{
-  padding: 2em;
-}*/
+.z-form{
+  margin-top: 30px;
+}
+.type input{
+  max-width: 100px;
+}
+
+#echarts_main{
+  margin-top: 3em ;
+  width: 400px;
+  height: 400px;
+}
 
 /* ************************** login page **********************/
 #home-bak {

@@ -228,8 +228,11 @@
     $type1.change(function () {
       type1 = $(this).val();
       $.ajax({
-        url: '/admin/ass/ajax/type2?type1=' + type1,
+        url: '/admin/ass/ajax/type2',
         global: false,
+        data:{
+          type1: type1
+        },
         success: function (result) {
           $('select[name=type2] option:gt(0)').remove();
           for (var i = 0; i < result.length; i++) {

@@ -1,11 +1,73 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
-</html>
+<% include layout/common-head.ejs %>
+<body>
+<div class="container">
+  <div class="row">
+    <!--<div class="col-lg-9 col-md-9">-->
+      <div class="content">
+        <h3><%= title %></h3>
+        <div class="index">
+          <table id="table"></table>
+        </div>
+      </div>
+    <!--</div>-->
+  </div>
+</div>
+<% include layout/common-footer.ejs %>
+<!-- bootstrap table -->
+<script src="/bootstrap-table/dist/bootstrap-table.js"></script>
+<script src="/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
+<script>
+  var $table = $('#table');
+  var $scoredate = $('#scoredate');
+  $(function () {
+    $('#table').bootstrapTable({
+      url: '/admin/stat/sum/table',
+      height: 550,
+//      toolbar: '#toolbar',
+//      search: true,
+//      showRefresh: true,
+//      showColumns: true,
+//      showExport: true,
+      ajaxOptions: {global: false},
+//      showPaginationSwitch: true,
+      pagination: true,
+      sidePagination: 'client',
+      pageNumber: 1,
+      pageSize: 10,
+      pageList: '[10, 20, 50, ALL]',
+      responseHandler: function (res) {
+        return res;
+      },
+      sortOrder: 'desc',
+      sortName: 'sum',
+      columns: [{
+        field: 'userid',
+        title: '员工号'
+      }, {
+        field: 'username',
+        title: '姓名'
+      }, {
+        field: 'office',
+        title: '科室'
+      }, {
+        field: 'produce',
+        title: '工序'
+      }, {
+        field: 'team',
+        title: '班组'
+      }, {
+        field: 'sum',
+        title: '总分',
+        sortable: true
+      }, {
+        field: 'plus',
+        title: '总加分'
+      }, {
+        field: 'minus',
+        title: '总减分'
+      }]
+    });
+  });
+</script>
+</body>
+<% include layout/common-foot.ejs %>

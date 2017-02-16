@@ -25,6 +25,7 @@ exports.querySQL = function(sql,callback){
 };
 
 // 执行多条SQL - 待定
+/*
 exports.queryTwoSQL = function(sql1,sql2,callback){
   pool.getConnection(function(err,conn){
     if(err){
@@ -41,4 +42,4 @@ exports.queryTwoSQL = function(sql1,sql2,callback){
       });
     }
   });
-};
+};*/
