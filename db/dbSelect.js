@@ -398,3 +398,46 @@ exports.getTypeBy3 = function (type1, type2, type3, callback) {
   });
 };
 /***********************************************************/
+
+/****************** index *****************************/
+// 当月汇总
+exports.getIndexJsonByDid = function (did, scoredate, callback) {
+  /*var sql = 'set @s = 0;' +
+      'set @rownum = 0;' +
+      'set @rank = 0;' +
+      'select (@rownum := @rownum + 1) rownum,' +
+      '(case when @s = T.s then @rank else @rank := @rownum end) rank,' +
+      'T.* ' +
+      'from ' +
+      '(select L.userid,' +
+      'U.username,' +
+      '100+SUM(score) s,' +
+      'SUM(case WHEN L.type1="加分" THEN score ELSE 0 END) s1,' +
+      'SUM(case WHEN L.type1="减分" THEN score ELSE 0 END) s2 from log L ' +
+      'left join user U on U.userid=L.userid ' +
+      'left join dept D on U.did=D.did ' +
+      'where U.dmark != "x" ' +
+      'AND L.dmark != "x" ' +
+      'AND D.dmark != "x" ' +
+      'AND L.scoredate like "' + scoredate + '%" ' +
+      'AND U.did = ' + did + ' ' +
+      'group by L.userid order by s desc) T';*/
+  var sql1 = 'select L.userid,' +
+      'U.username,' +
+      '100+SUM(score) s,' +
+      'SUM(case WHEN L.type1="加分" THEN score ELSE 0 END) s1,' +
+      'SUM(case WHEN L.type1="减分" THEN score ELSE 0 END) s2 from log L ' +
+      'left join user U on U.userid=L.userid ' +
+      'left join dept D on U.did=D.did ' +
+      'where U.dmark != "x" ' +
+      'AND L.dmark != "x" ' +
+      'AND D.dmark != "x" ' +
+      'AND L.scoredate like "' + scoredate + '%" ' +
+      'AND U.did = ' + did + ' ' +
+      'group by L.userid order by s desc';
+  connect.querySQL(sql1, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
+
+/*****************************************************/

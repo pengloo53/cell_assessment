@@ -1,16 +1,11 @@
 <% include layout/common-head.ejs %>
 <body>
-<div class="container">
-  <div class="row">
-    <!--<div class="col-lg-9 col-md-9">-->
-      <div class="content">
-        <h3><%= title %></h3>
-        <div class="index">
-          <table id="table"></table>
-        </div>
-      </div>
-    <!--</div>-->
-  </div>
+<div class="content">
+    <input type="hidden" id="did" value="<%= did %>">
+    <div class="index">
+        <h1 class="text-center"><%= title %>组员工考核情况（<%= day %>）</h1>
+        <table id="table"></table>
+    </div>
 </div>
 <% include layout/common-footer.ejs %>
 <!-- bootstrap table -->
@@ -18,56 +13,64 @@
 <script src="/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
 <script>
   var $table = $('#table');
-  var $scoredate = $('#scoredate');
+  var did = $('#did').val();
+
   $(function () {
     $('#table').bootstrapTable({
-      url: '/admin/stat/sum/table',
-      height: 550,
-//      toolbar: '#toolbar',
-//      search: true,
-//      showRefresh: true,
-//      showColumns: true,
-//      showExport: true,
+      url: '/json',
+      height: 700,
+      striped: true,
       ajaxOptions: {global: false},
-//      showPaginationSwitch: true,
       pagination: true,
       sidePagination: 'client',
       pageNumber: 1,
-      pageSize: 10,
+      pageSize: 3,
       pageList: '[10, 20, 50, ALL]',
       responseHandler: function (res) {
+        for (var i = 0; i < res.length; i++) {
+          res[i].rank = i + 1;
+        }
         return res;
       },
+      queryParams: function (params) {
+        return {
+          did: did
+        }
+      },
       sortOrder: 'desc',
-      sortName: 'sum',
+      sortName: 's',
       columns: [{
+        field: 'rank',
+        title: '排名',
+        align: 'center'
+      }, {
         field: 'userid',
-        title: '员工号'
+        title: '员工号',
+        align: 'center'
       }, {
         field: 'username',
-        title: '姓名'
+        title: '姓名',
+        align: 'center'
       }, {
-        field: 'office',
-        title: '科室'
-      }, {
-        field: 'produce',
-        title: '工序'
-      }, {
-        field: 'team',
-        title: '班组'
-      }, {
-        field: 'sum',
+        field: 's',
         title: '总分',
-        sortable: true
+        align: 'center'
       }, {
-        field: 'plus',
-        title: '总加分'
+        field: 's1',
+        title: '总加分',
+        align: 'center'
       }, {
-        field: 'minus',
-        title: '总减分'
+        field: 's2',
+        title: '总减分',
+        align: 'center'
       }]
     });
   });
+  // 自动刷新
+  function refresh(){
+    window.location.reload();
+  }
+//  setTimeout('refresh()', 1000*10); //指定10秒刷新一次
 </script>
 </body>
 <% include layout/common-foot.ejs %>
