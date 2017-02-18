@@ -38,3 +38,5 @@ node_modules
 # upload images
 public/images/uploads/**
 
+# vs code
+.vscode
