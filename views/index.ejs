@@ -18,7 +18,7 @@
   $(function () {
     $('#table').bootstrapTable({
       url: '/json',
-      height: 700,
+      height: 660,
       striped: true,
       ajaxOptions: {global: false},
       pagination: true,
@@ -27,8 +27,19 @@
       pageSize: 3,
       pageList: '[10, 20, 50, ALL]',
       responseHandler: function (res) {
-        for (var i = 0; i < res.length; i++) {
-          res[i].rank = i + 1;
+        res.sort(function(x1,x2){
+          s1 = x1.sum;
+          s2 = x2.sum;
+          if(s1 < s2){
+            return 1;
+          }
+          if(s1 > s2){
+            return -1;
+          }
+          return 0;
+        });
+        for(var i = 0 ; i< res.length; i++){
+          res[i].rank = i + 1 ;
         }
         return res;
       },

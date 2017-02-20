@@ -35,7 +35,7 @@ exports.queryTwoSQL = function(sql1,sql2,callback){
           callback(err,null,null);
         }else{
           conn.query(sql2,function(err2,rows2,fields2){
-
+            callback(err,rows,fields2);
           });
         }
       });
