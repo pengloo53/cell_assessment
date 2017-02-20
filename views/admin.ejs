@@ -13,9 +13,7 @@
                 <!--<div class="panel-heading">-->
                 <span class="hidden" id="page">员工考核</span>
                 <div id="successField"></div>
-                <h3>员工考核 -
-                    <small id="userInfo" class="text-danger"></small>
-                </h3>
+                <h3><%= title %></h3>
                 <!--<div id="errField"></div>-->
                 <!--</div>-->
                 <p class="lead"></p>
@@ -25,6 +23,12 @@
                             <label for="userid" class="control-label col-lg-2">员工号</label>
                             <div class="col-lg-3">
                                 <input type="text" name="userid" id="userid" class="form-control" placeholder="请输入员工号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username" class="control-label col-lg-2">姓名</label>
+                            <div class="col-lg-3">
+                                <input type="text" name="username" id="username" class="form-control" disabled>
                             </div>
                         </div>
                         <div class="form-group">
@@ -99,17 +103,18 @@
 <script>
   $(function () {
     // 输入员工号，显示姓名
-    var $userInfo = $('#userInfo');
-    $('#userid').blur(function () {
+    var $username = $('#username');
+    var $userid = $('#userid');
+    $userid.change(function () {
       var userid = $(this).val().trim();
       $.ajax({
         url: '/admin/ass/ajax/user?userid=' + userid,
         global: false,
         success: function (result) {
-          $userInfo.html('<strong>' + result.username + '</strong>');
+          $username.val(result.username).css('color','');
         },
         error: function () {
-          $userInfo.html('不存在该用户');
+          $username.val('不存在该用户').css('color','red');
         }
       });
     });
@@ -185,7 +190,7 @@
       var type3Val = $('select[name=type3] option:selected').val();
       var scoredate = $('input[name=scoredate]').val();
       if (userid && score && type1Val && type2Val && type3Val && scoredate) {
-        if($userInfo.text() != '不存在该用户'){
+        if($username.val() != '不存在该用户'){
           $.ajax({
             url: '/admin/ass/',
             method: 'post',

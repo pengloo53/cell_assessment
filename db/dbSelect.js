@@ -20,6 +20,26 @@ exports.getUserInfo = function (userid, callback) {
     callback(err, rows, fields);
   });
 };
+// 根据员工号以及考核员获取员工信息
+exports.getUserInfoFromAdmin = function(userid, adminid, callback){
+
+};
+// 根据员工号以及系统管理员获取员工信息
+exports.getUserInfoFromSys = function(userid,adminid,callback){
+var sql = 'select uid, userid, username,D1.department,D1.office,D1.produce,D1.team ' +
+      'from user U ' +
+      'left join dept D1 on U.did=D1.did ' +
+      'left join dept D2 on D1.department=D2.department ' +
+      'left join admin A on A.did=D2.did ' +
+      'where U.dmark != "x" ' +
+      'and D1.dmark != "x" ' +
+      'and D2.dmark != "x" ' +
+      'and A.dmark != "x" ' +
+      'and A.adminid="' + adminid + '"';
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};
 // 根据部门系统管理员获取用户列表
 /*exports.getUsersBySys = function (adminid, offset, limit, sort, order, callback) {
  var sql = 'select uid, userid, username,D1.department,D1.office,D1.produce,D1.team ' +

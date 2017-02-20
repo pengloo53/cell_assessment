@@ -40,15 +40,15 @@ router.get('/json',function(req,res,next){
   });
 });
 
-// 登陆页
+// 登录页
 router.get('/login', function (req, res, next) {
   res.render('login', {
-    title: '考核员登陆页',
+    title: '考核员登录页面',
     message: ''
   });
 });
 
-// 登陆表单信息提交
+// 登录表单信息提交
 router.post('/login', function (req, res, next) {
   var adminid = req.body.adminid;
   var passwd = req.body.passwd;
@@ -56,12 +56,12 @@ router.post('/login', function (req, res, next) {
   if (adminid && passwd) {
     dbSelect.getAdminInfo(adminid, function (err, rows, fields) {
       if (!err) {
-        if (rows[0].password == passwd && rows[0].dmark != "x") {
+        if (rows[0] && rows[0].password == passwd && rows[0].dmark != "x") {
           req.session.adminInfo = rows[0]; // 将管理员信息保存在session中
           res.redirect('/admin');
         } else {
           res.render('login', {
-            title: '考核员登陆页',
+            title: '考核员登录页面',
             message: '账号或者密码错误'
           });
         }

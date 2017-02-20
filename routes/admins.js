@@ -34,7 +34,7 @@ router.get('/', function (req, res, next) {
     } else {
       // console.log(rows);
       res.render('admin', {
-        title: '后台考核页面',
+        title: '员工考核',
         info: rows[0]
       });
     }
