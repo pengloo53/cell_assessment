@@ -57,7 +57,7 @@ input[name=scoredate1],input[name=scoredate2]{
 
 #echarts_main{
   margin-top: 3em ;
-  width: 400px;
+  width: 600px;
   height: 400px;
 }
 

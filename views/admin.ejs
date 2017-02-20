@@ -22,7 +22,7 @@
                         <div class="form-group">
                             <label for="userid" class="control-label col-lg-2">员工号</label>
                             <div class="col-lg-3">
-                                <input type="text" name="userid" id="userid" class="form-control" placeholder="请输入员工号">
+                                <input type="text" name="userid" id="userid" class="form-control" placeholder="请输入员工号" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group">
@@ -105,16 +105,21 @@
     // 输入员工号，显示姓名
     var $username = $('#username');
     var $userid = $('#userid');
-    $userid.change(function () {
+    var errMessage = '本组不存在此用户';
+    $userid.blur(function () {
       var userid = $(this).val().trim();
       $.ajax({
         url: '/admin/ass/ajax/user?userid=' + userid,
         global: false,
         success: function (result) {
-          $username.val(result.username).css('color','');
+          if(result.length == 1){
+            $username.val(result[0].username).css('color','');
+          }else{
+            $username.val(errMessage).css('color','red');
+          }
         },
         error: function () {
-          $username.val('不存在该用户').css('color','red');
+          $username.val(errMessage).css('color','red');
         }
       });
     });
@@ -177,11 +182,8 @@
       todayBtn: "linked"
     });
     // 提交表单
-    $('#submit').click(function () {
-//      $successField.html('');
-      $('form').submit(function(){
-        return false;
-      });
+    $('#submit').click(function (e) {
+      e.preventDefault(); // 取消表单默认提交
       $('#userid').blur();
       var userid = $('input[name=userid]').val();
       var scoreNum = $('select[name=score] option:selected').val();
@@ -190,7 +192,7 @@
       var type3Val = $('select[name=type3] option:selected').val();
       var scoredate = $('input[name=scoredate]').val();
       if (userid && score && type1Val && type2Val && type3Val && scoredate) {
-        if($username.val() != '不存在该用户'){
+        if($username.val() != errMessage){
           $.ajax({
             url: '/admin/ass/',
             method: 'post',

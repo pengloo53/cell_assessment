@@ -43,13 +43,25 @@ router.get('/', function (req, res, next) {
 // Ajax-根据员工号获取员工信息
 router.get('/ass/ajax/user', function (req, res, next) {
   var userid = req.query.userid.trim();
-  dbSelect.getUserInfo(userid, function (err, rows, fields) {
-    if (err) {
-      errHandle(res, 'db return err', err);
-    } else {
-      res.json(rows[0]);
-    }
-  });
+  var adminid = req.session.adminInfo.adminid;
+  var type = req.session.adminInfo.type;
+  if(type == 'admin'){
+    dbSelect.getUserInfoFromAdmin(userid,adminid,function(err,rows,fields){
+      if(err){
+        errHandle(res,'getUserInfoFromAdmin return err',err);
+      }else{
+        res.json(rows);
+      }
+    });
+  }else{
+    dbSelect.getUserInfoFromSys(userid,adminid, function (err, rows, fields) {
+      if (err) {
+        errHandle(res, 'getUserInfoFromSys return err', err);
+      } else {
+        res.json(rows);
+      }
+    });
+  }
 });
 
 // Ajax-根据type1获取type2
