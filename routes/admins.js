@@ -343,7 +343,7 @@ router.get('/stat/type', function (req, res, next) {
     } else {
       // console.log(rows);
       res.render('admin-stat-type', {
-        title: '减分占比报表',
+        title: '加减分占比报表',
         info: rows[0]
       });
     }
@@ -357,9 +357,10 @@ router.get('/stat/type/table', function(req,res,next){
   var now = new Date();
   var month = myUtil.getDate(now).substring(0,6); // 当月，如：201702
   var scoredate = req.query.scoredate || month;
+  var type1 = req.query.type1 || '减分';
   if(type == 'admin'){
     var did = req.session.adminInfo.did;
-    dbSelect.getMinusCountByDid(did,scoredate,function(err,rows,fields){
+    dbSelect.getCountByDid(did,scoredate,type1,function(err,rows,fields){
       if(!err){
         res.json(rows);
       }else{
@@ -370,7 +371,7 @@ router.get('/stat/type/table', function(req,res,next){
     var office = req.query.office;
     var produce = req.query.produce;
     var team = req.query.team;
-    dbSelect.getMinusCountByDpt(department,office,produce,team,scoredate,function(err,rows,fields){
+    dbSelect.getCountByDpt(department,office,produce,team,scoredate,type1,function(err,rows,fields){
       if(!err){
         res.json(rows);
       }else{

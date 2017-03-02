@@ -2,11 +2,11 @@
  * Created by 118663 on 2017/2/15.
  */
 // 根据data直接渲染chart
-function refreshChart(data1,data2){
+function refreshChart(data1,data2,title){
   var myChart = echarts.init(document.getElementById('echarts_main'));
   myChart.setOption({
     title: {
-      text: '减分占比图表',
+      text: title + '占比报表',
       // subtext: subtext,
       x: 'center'
     },

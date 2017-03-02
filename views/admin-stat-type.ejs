@@ -14,6 +14,13 @@
                 <div class="type">
                     <div class="z-form">
                         <form class="form-inline">
+                            <div class="form-group">
+                                <label for="type1">加/减</label>
+                                <select name="type1" id="type1" class="form-control">
+                                    <option value="加分">加分</option>
+                                    <option value="减分" selected>减分</option>
+                                </select>
+                            </div>
                             <div class="form-group" id="datepicker">
                                 <label for="scoredate">日期</label>
                                 <input type="text" class="form-control" id="scoredate" placeholder="填写月份">
@@ -67,6 +74,7 @@
   var $officeField = $('#office');
   var $produceField = $('#produce');
   var $teamField = $('#team');
+  var $type1 = $('#type1');
   $(function () {
     $('#table').bootstrapTable({
       url: '/admin/stat/type/table',
@@ -86,15 +94,16 @@
           scoredate: $scoredate.val(),
           office: $officeField.val(),
           produce: $produceField.val(),
-          team: $teamField.val()
+          team: $teamField.val(),
+          type1: $type1.val()
         }
       },
       columns: [{
         field: 'type2',
-        title: '减分类型'
+        title: '类型'
       }, {
         field: 'count',
-        title: '数量'
+        title: '评分次数'
       }]
     });
     // toolbar
@@ -112,7 +121,7 @@
           name: data[i].type2
         });
       }
-      refreshChart(data1, data2);
+      refreshChart(data1, data2,$type1.val());
     });
     // 日期选择
     $('#scoredate').datepicker({

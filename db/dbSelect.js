@@ -286,22 +286,22 @@ exports.getSumByAdmin = function (adminid, scoredate, callback) {
   });
 };
 
-// 按班组减分行数统计 - by did
-exports.getMinusCountByDid = function (did, scoredate, callback) {
+// 按班组，按类别，进行行数统计 - by did
+exports.getCountByDid = function (did, scoredate, type1, callback) {
   var sql = 'select L.type2,count(*) count from log L ' +
       'left join user U on U.userid = L.userid ' +
       'where U.did=' + did + ' ' +
       'and L.dmark != "x" ' +
       'and U.dmark != "x" ' +
       'and L.scoredate like "' + scoredate + '%" ' +
-      'and L.type1 = "减分"' +
+      'and L.type1 = "' + type1 + '"' +
       'group by L.type2';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
 };
-// 按班组减分行数统计 - by department office produce team
-exports.getMinusCountByDpt = function (department, office, produce, team, scoredate, callback) {
+// 按班组，按类别，进行行数统计 - by department office produce team
+exports.getCountByDpt = function (department, office, produce, team, scoredate, type1, callback) {
   var sql = 'select L.type2,count(*) count from log L ' +
       'left join user U on U.userid = L.userid where U.did =' +
       '(select did from dept ' +
@@ -312,7 +312,7 @@ exports.getMinusCountByDpt = function (department, office, produce, team, scored
       'and L.dmark != "x" ' +
       'and U.dmark != "x" ' +
       'and L.scoredate like "' + scoredate + '%" ' +
-      'and L.type1 = "减分"' +
+      'and L.type1 = "' + type1 + '"' +
       'group by L.type2';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
@@ -443,9 +443,9 @@ exports.getIndexJsonByDid = function (did, scoredate, callback) {
       'left join dept D on U.did=D.did ' +
       'left join log L on U.userid=L.userid ' +
       'where U.dmark != "x" ' +
-      'AND L.dmark != "x" ' +
-      'AND D.dmark != "x" ' +
-      'AND L.scoredate like "' + scoredate + '%" ' +
+      'AND (L.dmark != "x" or L.dmark is null) ' +
+      'AND (D.dmark != "x" or D.dmark is null) ' +
+      'AND (L.scoredate like "' + scoredate + '%" or L.scoredate is null) ' +
       'AND U.did = ' + did + ' ' +
       'group by U.userid order by s desc';
   connect.querySQL(sql, function (err, rows, fields) {
