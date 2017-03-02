@@ -38,6 +38,15 @@ nav{
 }
 
 /* admin.ejs */
+.ass ul {
+  position: absolute;
+  background-color: #eee;
+  z-index: 100;
+  font-size: 0.9em;
+  border: #ddd 1px solid;
+  padding: 0.5em 1em;
+  line-height: 1.5em;
+}
 .addNew ,.cancelNew{
   line-height: 3em;
   margin-left: -1.5em;

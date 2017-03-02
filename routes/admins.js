@@ -40,13 +40,13 @@ router.get('/', function (req, res, next) {
     }
   });
 });
-// Ajax-根据员工号获取员工信息
+// Ajax-根据员工号或者姓名获取员工信息
 router.get('/ass/ajax/user', function (req, res, next) {
-  var userid = req.query.userid.trim();
+  var searchVal = req.query.searchVal.trim();
   var adminid = req.session.adminInfo.adminid;
   var type = req.session.adminInfo.type;
   if(type == 'admin'){
-    dbSelect.getUserInfoFromAdmin(userid,adminid,function(err,rows,fields){
+    dbSelect.getUserInfoFromAdmin(searchVal,adminid,function(err,rows,fields){
       if(err){
         errHandle(res,'getUserInfoFromAdmin return err',err);
       }else{
@@ -54,7 +54,7 @@ router.get('/ass/ajax/user', function (req, res, next) {
       }
     });
   }else{
-    dbSelect.getUserInfoFromSys(userid,adminid, function (err, rows, fields) {
+    dbSelect.getUserInfoFromSys(searchVal,adminid, function (err, rows, fields) {
       if (err) {
         errHandle(res, 'getUserInfoFromSys return err', err);
       } else {

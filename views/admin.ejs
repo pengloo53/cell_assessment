@@ -20,9 +20,16 @@
                 <div class="ass">
                     <form action="/admin/ass" method="POST" role="form" class="form-horizontal">
                         <div class="form-group">
+                            <label for="search" class="control-label col-lg-2 col-md-2">搜索</label>
+                            <div class="col-lg-3 col-md-3">
+                                <input type="text" name="search" class="form-control" placeholder="输入员工号或者姓名">
+                            </div>
+                            <div class="col-md-3 col-lg-3" id="searchResult"></div>
+                        </div>
+                        <div class="form-group">
                             <label for="userid" class="control-label col-lg-2">员工号</label>
                             <div class="col-lg-3">
-                                <input type="text" name="userid" id="userid" class="form-control" placeholder="请输入员工号" autocomplete="off">
+                                <input type="text" name="userid" id="userid" class="form-control" disabled>
                             </div>
                         </div>
                         <div class="form-group">
@@ -81,7 +88,8 @@
                         <div class="form-group">
                             <label for="scoredate" class="control-label col-lg-2">日期</label>
                             <div class="col-lg-6" id="datepicker">
-                                <input type="text" name="scoredate" placeholder="评分日期" class="form-control" data-date-end-date="0d">
+                                <input type="text" name="scoredate" placeholder="评分日期" class="form-control"
+                                       data-date-end-date="0d">
                             </div>
                         </div>
                         <div class="form-group">
@@ -105,24 +113,46 @@
     // 输入员工号，显示姓名
     var $username = $('#username');
     var $userid = $('#userid');
-    var errMessage = '本组不存在此用户';
-    $userid.blur(function () {
-      var userid = $(this).val().trim();
-      $.ajax({
-        url: '/admin/ass/ajax/user?userid=' + userid,
-        global: false,
-        success: function (result) {
-          if(result.length == 1){
-            $username.val(result[0].username).css('color','');
-          }else{
-            $username.val(errMessage).css('color','red');
+    var $search = $('input[name=search]');
+    var $searchResult = $('#searchResult');
+    $search.keyup(function () {
+      var searchVal = $(this).val();
+      if (searchVal.trim()) {
+        $searchResult.empty();
+        $.ajax({
+          url: '/admin/ass/ajax/user',
+          data: {
+            searchVal: searchVal
+          },
+          global: false,
+          success: function (result) {
+            if (result.length > 0) {
+              var html = [];
+              html.push('<ul class="list-unstyled">');
+              for (var i = 0; i < result.length; i++) {
+                var liField = '<li><a href="javascript:void(0)">' + result[i].userid + ' - ' + result[i].username + '</a> </li>';
+                html.push(liField);
+              }
+              html.push('</ul>');
+              var $html = $(html.join(''));
+              $searchResult.append($html);
+              // 点击列表显示员工号以及姓名
+              $('#searchResult ul li').click(function () {
+                var value = $(this).text();
+                var userid = value.split('-')[0].trim();
+                var username = value.split('-')[1].trim();
+                $userid.val(userid);
+                $username.val(username);
+                $search.val('');
+              });
+            } else {
+              $searchResult.append('<span class="text-danger">没有结果</span>');
+            }
           }
-        },
-        error: function () {
-          $username.val(errMessage).css('color','red');
-        }
-      });
+        });
+      }
     });
+
     // 默认显示 + 分
     var $type1Field = $('input:radio[name=type1]');
     var $type2Select = $('#type2');
@@ -182,37 +212,36 @@
       todayBtn: "linked"
     });
     // 提交表单
+    $userid.val('');
+    $username.val('');
     $('#submit').click(function (e) {
       e.preventDefault(); // 取消表单默认提交
-      $('#userid').blur();
-      var userid = $('input[name=userid]').val();
+      var userid = $userid.val();
       var scoreNum = $('select[name=score] option:selected').val();
       // 减分保存负数
-      var score = (type1Val == "加分")?scoreNum:0-scoreNum;
+      var score = (type1Val == "加分") ? scoreNum : 0 - scoreNum;
       var type3Val = $('select[name=type3] option:selected').val();
       var scoredate = $('input[name=scoredate]').val();
       if (userid && score && type1Val && type2Val && type3Val && scoredate) {
-        if($username.val() != errMessage){
-          $.ajax({
-            url: '/admin/ass/',
-            method: 'post',
-            global: false,
-            data:{
-              userid: userid,
-              score: score,
-              type1: type1Val,
-              type2: type2Val,
-              type3: type3Val,
-              scoredate: scoredate
-            },
-            success: function (result) {
-              var $message = $('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times\;</a>' + result + '</div>');
-              $message.prependTo('.content').fadeOut(2000,function(){
-                $message.remove();
-              });
-            }
-          });
-        }
+        $.ajax({
+          url: '/admin/ass/',
+          method: 'post',
+          global: false,
+          data: {
+            userid: userid,
+            score: score,
+            type1: type1Val,
+            type2: type2Val,
+            type3: type3Val,
+            scoredate: scoredate
+          },
+          success: function (result) {
+            var $message = $('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times\;</a>' + result + '</div>');
+            $message.prependTo('.content').fadeOut(2000, function () {
+              $message.remove();
+            });
+          }
+        });
       } else {
         alert("请填写完整");
       }

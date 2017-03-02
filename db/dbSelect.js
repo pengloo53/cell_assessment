@@ -21,8 +21,8 @@ exports.getUserInfo = function (userid, callback) {
   });
 };
 // 根据员工号以及考核员获取员工信息
-exports.getUserInfoFromAdmin = function (userid, adminid, callback) {
-  var sql = 'select uid, userid, username, D.department, D.office, D.produce, D.team ' +
+exports.getUserInfoFromAdmin = function (searchVal, adminid, callback) {
+  var sql = 'select uid ,userid, username ' +
       'from user U ' +
       'left join dept D on U.did = D.did ' +
       'left join admin A on A.did = U.did ' +
@@ -30,14 +30,15 @@ exports.getUserInfoFromAdmin = function (userid, adminid, callback) {
       'and D.dmark != "x" ' +
       'and A.dmark != "x" ' +
       'and A.adminid="' + adminid + '" ' +
-      'and U.userid = "' + userid + '"';
+      'and (U.userid like "' + searchVal + '%"' +
+      'or U.username like "' + searchVal + '%")';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
 };
 // 根据员工号以及系统管理员获取员工信息
-exports.getUserInfoFromSys = function (userid, adminid, callback) {
-  var sql = 'select uid, userid, username,D1.department,D1.office,D1.produce,D1.team ' +
+exports.getUserInfoFromSys = function (searchVal, adminid, callback) {
+  var sql = 'select uid, userid, username ' +
       'from user U ' +
       'left join dept D1 on U.did=D1.did ' +
       'left join dept D2 on D1.department=D2.department ' +
@@ -47,7 +48,8 @@ exports.getUserInfoFromSys = function (userid, adminid, callback) {
       'and D2.dmark != "x" ' +
       'and A.dmark != "x" ' +
       'and A.adminid="' + adminid + '" ' +
-      'and U.userid = "' + userid + '"';
+      'and (U.userid like "' + searchVal + '%"' +
+      'or U.username like "' + searchVal + '%")';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
@@ -434,40 +436,19 @@ exports.getTypeBy3 = function (type1, type2, type3, callback) {
 /****************** index *****************************/
 // 当月汇总
 exports.getIndexJsonByDid = function (did, scoredate, callback) {
-  /*var sql = 'set @s = 0;' +
-   'set @rownum = 0;' +
-   'set @rank = 0;' +
-   'select (@rownum := @rownum + 1) rownum,' +
-   '(case when @s = T.s then @rank else @rank := @rownum end) rank,' +
-   'T.* ' +
-   'from ' +
-   '(select L.userid,' +
-   'U.username,' +
-   '100+SUM(score) s,' +
-   'SUM(case WHEN L.type1="加分" THEN score ELSE 0 END) s1,' +
-   'SUM(case WHEN L.type1="减分" THEN score ELSE 0 END) s2 from log L ' +
-   'left join user U on U.userid=L.userid ' +
-   'left join dept D on U.did=D.did ' +
-   'where U.dmark != "x" ' +
-   'AND L.dmark != "x" ' +
-   'AND D.dmark != "x" ' +
-   'AND L.scoredate like "' + scoredate + '%" ' +
-   'AND U.did = ' + did + ' ' +
-   'group by L.userid order by s desc) T';*/
-  var sql1 = 'select L.userid,' +
-      'U.username,' +
-      '100+SUM(score) s,' +
+  var sql = 'select U.userid, U.username,' +
+      '100+SUM(case WHEN L.type1 IS NOT NULL THEN score ELSE 0 END) s,' +
       'SUM(case WHEN L.type1="加分" THEN score ELSE 0 END) s1,' +
-      'SUM(case WHEN L.type1="减分" THEN score ELSE 0 END) s2 from log L ' +
-      'left join user U on U.userid=L.userid ' +
+      'SUM(case WHEN L.type1="减分" THEN score ELSE 0 END) s2 from user U ' +
       'left join dept D on U.did=D.did ' +
+      'left join log L on U.userid=L.userid ' +
       'where U.dmark != "x" ' +
       'AND L.dmark != "x" ' +
       'AND D.dmark != "x" ' +
       'AND L.scoredate like "' + scoredate + '%" ' +
       'AND U.did = ' + did + ' ' +
-      'group by L.userid order by s desc';
-  connect.querySQL(sql1, function (err, rows, fields) {
+      'group by U.userid order by s desc';
+  connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
 };

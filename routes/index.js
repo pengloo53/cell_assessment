@@ -30,7 +30,7 @@ router.get('/p/:did', function (req, res, next) {
 });
 router.get('/json',function(req,res,next){
   var did = req.query.did;
-  var scoredate = myUtil.getDate(new Date()).substring(0,6);
+  var scoredate = myUtil.getDate(new Date()).substring(0,6) -1;
   dbSelect.getIndexJsonByDid(did,scoredate,function(err,rows,fields){
     if(!err){
       res.json(rows);
