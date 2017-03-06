@@ -144,6 +144,7 @@
                 $userid.val(userid);
                 $username.val(username);
                 $search.val('');
+                $searchResult.empty();
               });
             } else {
               $searchResult.append('<span class="text-danger">没有结果</span>');
@@ -208,7 +209,8 @@
       daysOfWeekHighlighted: "0,6",
       autoclose: true,
       todayHighlight: true,
-      todayBtn: "linked"
+      todayBtn: "linked",
+      maxViewMode: 2
     });
     // 提交表单
     $userid.val('');

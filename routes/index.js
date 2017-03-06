@@ -8,7 +8,12 @@ var dbUpdate = require('../db/dbUpdate.js');
 var errHandle = require('../lib/errHandle.js');
 var myUtil = require('../lib/myUtil.js');
 
-/* GET home page. */
+/* Get default page. */
+router.get('/', function(req,res,next) {
+  res.redirect('/login');
+});
+
+/* GET display page. */
 router.get('/p/:did', function (req, res, next) {
   var did = req.params.did;
   var day = myUtil.getDate(new Date());
@@ -24,10 +29,11 @@ router.get('/p/:did', function (req, res, next) {
         did: did
       });
     }else{
-      next();
+      res.send('<h2>不存在该班组</h2>');
     }
   });
 });
+// bootstrap table json data
 router.get('/json',function(req,res,next){
   var did = req.query.did;
   var scoredate = myUtil.getDate(new Date()).substring(0,6);
@@ -38,6 +44,15 @@ router.get('/json',function(req,res,next){
       errHandle(res,'getIndexJsonByDid return err',err)
     }
   });
+});
+// page - personal page
+router.get('/person/:userid', function(req,res,next){
+  var userid = req.params.userid;
+  res.send('敬请期待');
+});
+// bootstrap table - 个人报表查询
+router.get('/person/json',function(req,res,next){
+
 });
 
 // 登录页

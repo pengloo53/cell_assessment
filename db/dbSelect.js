@@ -151,7 +151,7 @@ exports.getAdminsBySys = function (adminid, callback) {
       'left join dept D2 on D1.department = D2.department ' +
       'left join admin A2 on A2.did = D2.did ' +
       'where A2.adminid = "' + adminid + '" ' +
-      'and A1.type != "sys" ' +
+      'and A1.type = "admin" ' +
       'and A1.dmark != "x" ' +
       'and D1.dmark != "x" ' +
       'and D2.dmark != "x" ' +
@@ -242,45 +242,41 @@ exports.getLogByUser = function (userid, callback) {
 
 // 个人sum报表 - 系统管理员：默认当月
 exports.getSumBySys = function (adminid, scoredate, callback) {
-  var sql = 'select L.userid,U.username,D1.office,D1.produce,D1.team,' +
-      '100+SUM(score) sum,' +
-      'SUM(case WHEN L.type1="加分" THEN score ELSE 0 END) plus,' +
-      'SUM(case WHEN L.type1="减分" THEN score ELSE 0 END) minus ' +
-      'from log L ' +
-      'left join user U on U.userid=L.userid ' +
+  var sql = 'select U.userid,U.username,D1.office,D1.produce,D1.team,' +
+      '100+SUM(case WHEN L.type1 IS NOT NULL THEN score ELSE 0 END) sum,' +
+      'SUM(case WHEN L.type1="加分" AND L.scoredate like "' + scoredate + '%" THEN score ELSE 0 END) plus,' +
+      'SUM(case WHEN L.type1="减分" AND L.scoredate like "' + scoredate + '%" THEN score ELSE 0 END) minus ' +
+      'from user U ' +
+      'left join log L on U.userid=L.userid ' +
       'left join dept D1 on U.did=D1.did ' +
       'left join dept D2 on D1.department=D2.department ' +
       'left join admin A on A.did=D2.did ' +
       'where A.adminid="' + adminid + '" ' +
-      'and L.scoredate like "' + scoredate + '%" ' +
-      'and L.dmark != "x" ' +
+      'and (L.dmark != "x" or L.dmark is null)' +
       'and U.dmark != "x" ' +
-      'and D1.dmark != "x" ' +
-      'and D2.dmark != "x" ' +
-      'and A.dmark != "x" ' +
-      'group by L.userid';
+      'and (D1.dmark != "x" or D1.dmark is null) ' +
+      'and (D2.dmark != "x" or D2.dmark is null)' +
+      'and (A.dmark != "x" or A.dmark is null) ' +
+      'group by U.userid order by sum desc, plus desc';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
 };
 
 // 个人sum报表 - 考核员: 默认当月
-exports.getSumByAdmin = function (adminid, scoredate, callback) {
-  var sql = 'select L.userid, U.username,D.office,D.produce,D.team,' +
-      '100+SUM(score) sum,' +
-      'SUM(case WHEN L.type1="加分" THEN score ELSE 0 END) plus,' +
-      'SUM(case WHEN L.type1="减分" THEN score ELSE 0 END) minus ' +
-      'from log L ' +
-      'left join user U on U.userid=L.userid ' +
+exports.getSumByAdmin = function (did, scoredate, callback) {
+  var sql = 'select U.userid, U.username,D.office,D.produce,D.team,' +
+      '100+SUM(case WHEN L.type1 IS NOT NULL THEN score ELSE 0 END) sum,' +
+      'SUM(case WHEN L.type1="加分" AND L.scoredate like "' + scoredate + '%" THEN score ELSE 0 END) plus,' +
+      'SUM(case WHEN L.type1="减分" AND L.scoredate like "' + scoredate + '%" THEN score ELSE 0 END) minus ' +
+      'from user U ' +
       'left join dept D on U.did=D.did ' +
-      'left join admin A on A.did=D.did ' +
-      'where A.adminid="' + adminid + '" ' +
-      'and L.scoredate like "' + scoredate + '%" ' +
-      'and L.dmark != "x" ' +
+      'left join log L on U.userid=L.userid ' +
+      'where (L.dmark != "x" or L.dmark is null) ' +
       'and U.dmark != "x" ' +
-      'and D.dmark != "x" ' +
-      'and A.dmark != "x" ' +
-      'group by L.userid';
+      'and (D.dmark != "x" or D.dmark is null) ' +
+      'and U.did = ' + did + ' ' +
+      'group by U.userid order by sum desc, plus desc';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });
@@ -437,17 +433,16 @@ exports.getTypeBy3 = function (type1, type2, type3, callback) {
 // 当月汇总
 exports.getIndexJsonByDid = function (did, scoredate, callback) {
   var sql = 'select U.userid, U.username,' +
-      '100+SUM(case WHEN L.type1 IS NOT NULL THEN score ELSE 0 END) s,' +
-      'SUM(case WHEN L.type1="加分" THEN score ELSE 0 END) s1,' +
-      'SUM(case WHEN L.type1="减分" THEN score ELSE 0 END) s2 from user U ' +
+      '100+SUM(case WHEN L.type1 IS NOT NULL THEN score ELSE 0 END) sum,' +
+      'SUM(case WHEN L.type1="加分" AND L.scoredate like "' + scoredate + '%" THEN score ELSE 0 END) plus,' +
+      'SUM(case WHEN L.type1="减分" AND L.scoredate like "' + scoredate + '%" THEN score ELSE 0 END) minus from user U ' +
       'left join dept D on U.did=D.did ' +
       'left join log L on U.userid=L.userid ' +
       'where U.dmark != "x" ' +
       'AND (L.dmark != "x" or L.dmark is null) ' +
       'AND (D.dmark != "x" or D.dmark is null) ' +
-      'AND (L.scoredate like "' + scoredate + '%" or L.scoredate is null) ' +
       'AND U.did = ' + did + ' ' +
-      'group by U.userid order by s desc';
+      'group by U.userid order by sum desc, plus desc';
   connect.querySQL(sql, function (err, rows, fields) {
     callback(err, rows, fields);
   });

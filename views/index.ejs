@@ -14,11 +14,11 @@
 <script>
   var $table = $('#table');
   var did = $('#did').val();
-
+  var $pageNext; // 获取翻页按钮
   $(function () {
-    $('#table').bootstrapTable({
+    $table.bootstrapTable({
       url: '/json',
-      height: 660,
+      height: 668,
       striped: true,
       ajaxOptions: {global: false},
       pagination: true,
@@ -27,17 +27,27 @@
       pageSize: 10,
       pageList: '[10, 20, 50, ALL]',
       responseHandler: function (res) {
-        res.sort(function(x1,x2){
+/*        res.sort(function(x1,x2){
           s1 = x1.sum;
           s2 = x2.sum;
+          p1 = x1.plus;
+          p2 = x2.plus;
           if(s1 < s2){
             return 1;
           }
           if(s1 > s2){
             return -1;
           }
-          return 0;
-        });
+          if(s1 == s2){
+            if(p1 < p2){
+              return 1;
+            }
+            if(p1 > p2){
+              return -1
+            }
+            return 0;
+          }
+        });*/
         for(var i = 0 ; i< res.length; i++){
           res[i].rank = i + 1 ;
         }
@@ -63,25 +73,35 @@
         title: '姓名',
         align: 'center'
       }, {
-        field: 's',
+        field: 'sum',
         title: '总分',
         align: 'center'
       }, {
-        field: 's1',
+        field: 'plus',
         title: '总加分',
         align: 'center'
       }, {
-        field: 's2',
+        field: 'minus',
         title: '总减分',
         align: 'center'
       }]
     });
+    $table.on('post-body.bs.table',function(){
+      $pageNext = $('.page-next');
+    });
   });
   // 自动刷新
-  function refresh(){
-    window.location.reload();
+/*  function refresh(){
+   $table.bootstrapTable('refresh');
+   }
+   setInterval('refresh()', 1000*10);*/
+
+  // 定时翻页
+  function changePage(){
+    $pageNext.click();
   }
-//  setTimeout('refresh()', 1000*10); //指定10秒刷新一次
+  setInterval('changePage()', 1000*3);
+
 </script>
 </body>
 <% include layout/common-foot.ejs %>
