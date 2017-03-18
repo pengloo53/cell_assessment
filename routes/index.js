@@ -10,7 +10,7 @@ var myUtil = require('../lib/myUtil.js');
 
 /* Get default page. */
 router.get('/', function(req,res,next) {
-  res.redirect('/login');
+  res.redirect('/admin');
 });
 
 /* GET display page. */

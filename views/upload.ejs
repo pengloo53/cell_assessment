@@ -1,0 +1,49 @@
+<% include layout/common-head.ejs %>
+<body>
+<% include layout/common-header.ejs %>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 hidden-sm hidden-xs">
+            <% include layout/common-nav.ejs %>
+        </div>
+        <!--<div class="col-lg-1"></div>-->
+        <div class="col-lg-9 col-md-9">
+            <div class="content">
+                <!--<div class="panel-heading">-->
+                <span class="hidden" id="page">员工考核</span>
+                <div id="successField"></div>
+                <h3><%= title %></h3>
+                <!--<div id="errField"></div>-->
+                <!--</div>-->
+                <p class="lead"></p>
+                <div class="upload">
+                    <form method="POST" action="/admin/upload/addUser" enctype="multipart/form-data" class="form-inline">
+                        <div class="form-group">
+                            <!--<label for="file">员工批量上传</label>-->
+                            <input type="file" name="file" id='myfile'>
+                        </div>
+                        <input type="submit" name="submit" value='上传' class="btn btn-primary btn-sm">
+                    </form>
+                </div>
+                <% if (message){ %>
+                <div class="alert alert-danger"><%- message %></div>
+                <% }else{ %>
+                <div class="alert alert-success">上传成功，请<a href="/admin/staff">点击查看</a></div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+<% include layout/common-footer.ejs %>
+<script>
+    $(function(){
+      $('form').submit(function(e){
+        if($('input[type=file]').val() == ''){
+          e.preventDefault();
+        }
+      });
+    });
+</script>
+</body>
+<% include layout/common-foot.ejs %>
+

@@ -34,6 +34,13 @@ exports.addUserByDid = function (userid, username, did, crtdate, crttime, crtuse
     callback(err, rows, fields);
   });
 };
+// 批量上传用户
+/*exports.addUsers = function(data,callback){
+  var sql = 'insert into user (userid ,username,did,crtdate,crttime,crtuser) values(' + data + ')';
+  connect.querySQL(sql, function (err, rows, fields) {
+    callback(err, rows, fields);
+  });
+};*/
 
 /**************** add admin *****************/
 exports.addAdmin = function (adminid, adminname, department, office, produce, team, password, type, crtdate, crttime, crtuser, callback) {

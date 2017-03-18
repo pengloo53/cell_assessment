@@ -161,7 +161,10 @@
     var type1Val = $type1Field.val();
     var type2Val = '';
     $.ajax({
-      url: '/admin/ass/ajax/type2?type1=' + type1Val,
+      url: '/admin/ass/ajax/type2',
+      data: {
+        type1: type1Val
+      },
       global: false,
       success: function (result) {
         for (var i = 0; i < result.length; i++) {
@@ -174,7 +177,10 @@
     $type1Field.change(function () {
       type1Val = $(this).val();
       $.ajax({
-        url: '/admin/ass/ajax/type2?type1=' + type1Val,
+        url: '/admin/ass/ajax/type2',
+        data: {
+          type1: type1Val
+        },
         global: false,
         success: function (result) {
           $('select[name=type2] option:gt(0)').remove();
@@ -190,7 +196,11 @@
     $type2Select.change(function () {
       type2Val = $(this).val();
       $.ajax({
-        url: '/admin/ass/ajax/type3?type1=' + type1Val + '&type2=' + type2Val,
+        url: '/admin/ass/ajax/type3',
+        data: {
+          type1: type1Val,
+          type2: type2Val
+        },
         global: false,
         success: function (result) {
           $('select[name=type3] option:gt(0)').remove();
